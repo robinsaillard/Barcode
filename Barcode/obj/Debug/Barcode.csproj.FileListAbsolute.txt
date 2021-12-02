@@ -13,3 +13,7 @@ C:\Users\dev\source\repos\Barcode\Barcode\obj\Debug\Barcode.csproj.GenerateResou
 C:\Users\dev\source\repos\Barcode\Barcode\obj\Debug\Barcode.csproj.CoreCompileInputs.cache
 C:\Users\dev\source\repos\Barcode\Barcode\obj\Debug\Barcode.exe
 C:\Users\dev\source\repos\Barcode\Barcode\obj\Debug\Barcode.pdb
+C:\Users\dev\source\repos\Barcode\Barcode\bin\Debug\HidRawData.dll
+C:\Users\dev\source\repos\Barcode\Barcode\obj\Debug\Barcode.csproj.CopyComplete
+C:\Users\dev\source\repos\Barcode\Barcode\bin\Debug\WebDriver.dll
+C:\Users\dev\source\repos\Barcode\Barcode\obj\Debug\Barcode_Content.g.cs

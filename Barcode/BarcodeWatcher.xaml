@@ -9,15 +9,14 @@
         Loaded="OnWindowLoaded" Width="713"
         >
     <DockPanel>
-        <StackPanel x:Name="Top" 
-                    Orientation="Horizontal"
+        <StackPanel Orientation="Horizontal"
                     DockPanel.Dock="Top" 
                     VerticalAlignment="Top" 
                     Height="55" 
                     Width="auto" 
                     Background="#FFF3F3F3">
-            <StackPanel x:Name="topLeft" Width="652" Panel.ZIndex="1" >
-                <StackPanel Height="55" Panel.ZIndex="1" Margin="0,0,502,0" Background="LightGray">
+            <StackPanel x:Name="topLeft" Width="652" Panel.ZIndex="1" Orientation="Horizontal">
+                <StackPanel Height="55" Panel.ZIndex="1" Background="LightGray">
                     <Label Content="Barcode Scanner"/>
                     <StackPanel Height="25" Panel.ZIndex="1" Orientation="Horizontal">
                         <Label Content="Statut : "/>
@@ -33,6 +32,16 @@
                                Padding="-4,5,5,5" />
                     </StackPanel>
                 </StackPanel>
+                <StackPanel Width="554" Height="55" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock Text="Device \ Hardware ID:"
+                                   Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBox x:Name="deviceId"
+                                 Margin="0,13"
+                                 MinWidth="300"
+                                 IsReadOnly="True" Width="365"/>
+                </StackPanel>
+                <StackPanel Height="55" Margin="0,0,552,0"/>
+                
             </StackPanel>
             <StackPanel x:Name="topRight" Width="133" Panel.ZIndex="1">
                 <Button x:Name="btnStart" Content="Démarrer" Click="OnStartScan" Margin="10,5,0,0" HorizontalAlignment="Left" Width="113"/>
@@ -45,7 +54,7 @@
             <RichTextBox Name="rtb"
                          AcceptsReturn="True"
                          IsReadOnly="True"
-                         TextChanged="OnTextChanged" />
+                         TextChanged="OnTextChanged" Margin="0,10" />
         </ScrollViewer>
     </DockPanel>
 
