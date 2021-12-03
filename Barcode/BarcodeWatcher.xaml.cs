@@ -2,24 +2,18 @@
 using Barcode.Properties;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Brush = System.Windows.Media.Brush;
 using Djlastnight.Hid;
 using Djlastnight.Input;
 using Brushes = System.Windows.Media.Brushes;
 using System.Diagnostics;
-
+using Octokit;
+using System.Windows.Forms;
+using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace Barcode
 {
@@ -47,7 +41,9 @@ namespace Barcode
 
         private void OnWindowLoaded(object sender, RoutedEventArgs e)
         {
+            CheckUpdate();
             this.Title = ApplicationInfo.AppNameVersion;
+
         }
 
         private void OnStartScan(object sender, RoutedEventArgs e)
@@ -222,6 +218,40 @@ namespace Barcode
                 this.btnStop.IsEnabled = false;
                 this.btnStart.Content = "Réessayez";
                 this.deviceId.Text = null;
+
+            }
+        }
+
+        private async void CheckUpdate()
+        {
+            GitHubClient client = new GitHubClient(new ProductHeaderValue("robinsaillard"));
+            IReadOnlyList<Release> releases = await client.Repository.Release.GetAll("robinsaillard", "Barcode");
+
+            //Setup the versions
+            Version latestGitHubVersion = new Version(releases[0].TagName.Trim(new Char[] { ' ', 'v' }));
+            Version localVersion = ApplicationInfo.CurrentVersion; 
+
+            int versionComparison = localVersion.CompareTo(latestGitHubVersion);
+            if (versionComparison < 0)
+            {
+                //The version on GitHub is more up to date than this local release.
+
+                string message = string.Format("Souhaitez vous mettre à jour {0} ? \n Version actuelle : {1} \n Nouvelle version : {2}",
+                    ApplicationInfo.AppName, 
+                    ApplicationInfo.CurrentVersion,
+                    latestGitHubVersion);
+
+                string caption = ApplicationInfo.AppName + " : Une mise à jour est disponible";
+                MessageBoxButtons buttons = MessageBoxButtons.YesNo;
+                DialogResult result;
+
+                // Displays the MessageBox.
+                result = MessageBox.Show(message, caption, buttons);
+                if (result == System.Windows.Forms.DialogResult.Yes)
+                {
+                    // Closes the parent form.
+                    this.Close();
+                }
 
             }
         }

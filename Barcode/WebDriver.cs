@@ -50,11 +50,11 @@ namespace Barcode
                     var driverService = ChromeDriverService.CreateDefaultService(DRIVER_DIR);
                     driverService.HideCommandPromptWindow = true;
 
-                    var chromeOptions = new ChromeOptions();
-                    
+                    this.chromeOptions = new ChromeOptions();
+
                     //chromeOptions.AddAdditionalChromeOption("excludeSwitches", new List<string>() { "enable-logging" });
-                    chromeOptions.AddUserProfilePreference("download.default_directory", @"C:\Users\dev\Documents");
-                    this.driver = new ChromeDriver(driverService, chromeOptions);
+                    this.chromeOptions.AddUserProfilePreference("download.default_directory", @"C:\Users\dev\Documents");
+                    this.driver = new ChromeDriver(driverService, this.chromeOptions);
                     var windowWidth = SystemParameters.PrimaryScreenWidth;
                     this.driver.Manage().Window.Position = new System.Drawing.Point(Convert.ToInt32(windowWidth /2), 1);
                 }
