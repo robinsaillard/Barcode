@@ -35,7 +35,7 @@ namespace Barcode
         private string log = "";
         private int i = 0;
         private KeyConvertor keyconvertor = new KeyConvertor();
-
+        private WebDriver driver; 
 
         public BarcodeWatcher()
         {
@@ -55,7 +55,7 @@ namespace Barcode
             UpdateStatutScanCode();
             if(this.device != null)
             {
-                var driver = new WebDriver();
+                this.driver = new WebDriver();
                 var version = driver.GetChromeVersion();
                 var paragraph = new Paragraph();
                 paragraph.Inlines.Add(new Run(string.Format("============ Démarrage {0} {1} ============ ", ApplicationInfo.AppNameVersion, version)));
@@ -63,7 +63,6 @@ namespace Barcode
                 this.btnStart.Content = "Démarrer";
                 this.reader = new HidDataReader(this);
                 this.reader.HidDataReceived += this.OnHidDataReceived;
-                this.Activated += BarcodeWatcher_Activated;
             }
             else
             {
@@ -71,11 +70,6 @@ namespace Barcode
                 paragraph.Inlines.Add(new Run(string.Format("Erreur : Verifiez les branchements USB de la zapette/douchette")));
                 this.rtb.Document.Blocks.Add(paragraph);
             }
-            
-        }
-
-        private void BarcodeWatcher_Activated(object sender, EventArgs e)
-        {
             
         }
 
@@ -87,7 +81,9 @@ namespace Barcode
             this.btnStop.IsEnabled = false;
             this.btnStart.IsEnabled = true;
             this.deviceId.Text = null;
-        
+            this.driver.CloseGhostsChromeDriver();
+
+
         }
 
         private void OnTextChanged(object sender, RoutedEventArgs e)
