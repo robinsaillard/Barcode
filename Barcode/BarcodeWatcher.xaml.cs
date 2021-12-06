@@ -14,6 +14,10 @@ using System.Diagnostics;
 using Octokit;
 using System.Windows.Forms;
 using MessageBox = System.Windows.Forms.MessageBox;
+using System.Net;
+using System.IO;
+using System.Runtime.InteropServices;
+using WPF_Auto_Update;
 
 namespace Barcode
 {
@@ -29,7 +33,9 @@ namespace Barcode
         private string log = "";
         private int i = 0;
         private KeyConvertor keyconvertor = new KeyConvertor();
-        private WebDriver driver; 
+        private WebDriver driver;
+        private Updater updater = new Updater(); 
+
 
         public BarcodeWatcher()
         {
@@ -250,7 +256,10 @@ namespace Barcode
                 if (result == System.Windows.Forms.DialogResult.Yes)
                 {
                     // Closes the parent form.
-                    this.Close();
+                    this.updater.CurrentApp = this; 
+                    this.updater.Releases = releases;
+                    this.updater.CheckForUpdates();
+
                 }
 
             }
