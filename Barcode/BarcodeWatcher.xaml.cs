@@ -53,7 +53,7 @@ namespace Barcode
                 this.driver = new WebDriver();
                 var version = driver.GetChromeVersion();
                 var paragraph = new Paragraph();
-                paragraph.Inlines.Add(new Run(string.Format("============ Démarrage {0} ============ ", version)));
+                paragraph.Inlines.Add(new Run(string.Format("============ Démarrage {0} ============ ", ApplicationInfo.AppNameVersion)));
                 this.rtb.Document.Blocks.Add(paragraph);
                 this.btnStart.Content = "Démarrer";
                 this.reader = new HidDataReader(this);
