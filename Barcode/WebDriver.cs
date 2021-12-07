@@ -1,18 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using Microsoft.Win32;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Remote;
 
 namespace Barcode
 {
@@ -146,6 +141,11 @@ namespace Barcode
                 worker.WaitForExit();
                 worker.Dispose();
             }
+        }
+
+        public void OpenLink(string url)
+        {
+            this.driver.Navigate().GoToUrl(url);
         }
     }
 }

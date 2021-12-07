@@ -11,14 +11,6 @@ using Djlastnight.Hid;
 using Djlastnight.Input;
 using Brushes = System.Windows.Media.Brushes;
 using System.Diagnostics;
-using Octokit;
-using System.Windows.Forms;
-using MessageBox = System.Windows.Forms.MessageBox;
-using System.Net;
-using System.IO;
-using System.Runtime.InteropServices;
-using WPF_Auto_Update;
-using System.Threading;
 
 namespace Barcode
 {
@@ -35,7 +27,6 @@ namespace Barcode
         private int i = 0;
         private KeyConvertor keyconvertor = new KeyConvertor();
         private WebDriver driver;
-        private Updater updater = new Updater(); 
 
 
         public BarcodeWatcher()
@@ -48,6 +39,7 @@ namespace Barcode
 
         private void OnWindowLoaded(object sender, RoutedEventArgs e)
         {
+           
             CheckUpdate();
             this.Title = ApplicationInfo.AppNameVersion;
 
@@ -61,7 +53,7 @@ namespace Barcode
                 this.driver = new WebDriver();
                 var version = driver.GetChromeVersion();
                 var paragraph = new Paragraph();
-                paragraph.Inlines.Add(new Run(string.Format("============ Démarrage {0} {1} ============ ", ApplicationInfo.AppNameVersion, version)));
+                paragraph.Inlines.Add(new Run(string.Format("============ Démarrage {0} ============ ", version)));
                 this.rtb.Document.Blocks.Add(paragraph);
                 this.btnStart.Content = "Démarrer";
                 this.reader = new HidDataReader(this);
@@ -91,12 +83,11 @@ namespace Barcode
 
         private void OnTextChanged(object sender, RoutedEventArgs e)
         {
-
+            
         }
 
         private void OnHidDataReceived(object sender, HidEvent e)
         {
-
             try
             {
                 if (this.btnStart.IsEnabled)
@@ -129,21 +120,17 @@ namespace Barcode
                         this.i = 2;
                         return;
                     }
-
-                    //this.log += ": " + e.RawInput.keyboard.MakeCode;
-                    //this.log += Convert.ToChar(e.RawInput.keyboard.VKey + val);
                     this.log += dict[e.RawInput.keyboard.MakeCode][this.i];
                     this.i = 0; 
                     if (e.RawInput.keyboard.VKey == 13)
                     {
-                        var web = "https://";
+                        var web = "http://";
                         AddHyperlinkText(web + this.log, this.log, "", "");
+                        this.driver.OpenLink(web + this.log);
                         this.log = "";
+                        
                     }
-
-  
-                }
-                
+                }        
             }
             catch (Exception ex)
             {
@@ -154,8 +141,10 @@ namespace Barcode
         private void AddHyperlinkText(string linkURL, string linkName,
                   string TextBeforeLink, string TextAfterLink)
         {
-            Paragraph para = new Paragraph();
-            para.Margin = new Thickness(0); // remove indent between paragraphs
+            Paragraph para = new Paragraph
+            {
+                Margin = new Thickness(0) // remove indent between paragraphs
+            };
 
             Hyperlink link = new Hyperlink();
             link.IsEnabled = true;
@@ -229,44 +218,13 @@ namespace Barcode
             }
         }
 
-        private async void CheckUpdate()
+        private void CheckUpdate()
         {
-            GitHubClient client = new GitHubClient(new ProductHeaderValue("robinsaillard"));
-            IReadOnlyList<Release> releases = await client.Repository.Release.GetAll("robinsaillard", "Barcode");
-
-            //Setup the versions
-            Version latestGitHubVersion = new Version(releases[0].TagName.Trim(new Char[] { ' ', 'v' }));
-            Version localVersion = ApplicationInfo.CurrentVersion; 
-
-            int versionComparison = localVersion.CompareTo(latestGitHubVersion);
-            if (versionComparison < 0)
-            {
-                //The version on GitHub is more up to date than this local release.
-
-                string message = string.Format("Souhaitez vous mettre à jour {0} ? \n Version actuelle : {1} \n Nouvelle version : {2}",
-                    ApplicationInfo.AppName, 
-                    ApplicationInfo.CurrentVersion,
-                    latestGitHubVersion);
-
-                string caption = ApplicationInfo.AppName + " : Une mise à jour est disponible";
-                MessageBoxButtons buttons = MessageBoxButtons.YesNo;
-                DialogResult result;
-
-                // Displays the MessageBox.
-                result = MessageBox.Show(message, caption, buttons);
-                if (result == System.Windows.Forms.DialogResult.Yes)
-                {
-                    // Closes the parent form.
-                    //this.updater.CurrentApp = this; 
-                    //updater.Releases = releases;
-                    // Thread thread1 = new Thread(new Updater());
-                    // thread1.Start();
-                    Process.Start("WPF_Auto_Update.exe");
-
-
-                }
-
-            }
+            Version localVersion = ApplicationInfo.CurrentVersion;
+            ProcessStartInfo updater = new ProcessStartInfo("WPF_Auto_Update.exe");
+            updater.WindowStyle = ProcessWindowStyle.Normal;
+            updater.Arguments = "name=" + ApplicationInfo.AppName + " version=" + localVersion;
+            Process.Start(updater);
         }
     }
 }

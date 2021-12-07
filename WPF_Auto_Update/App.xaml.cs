@@ -13,5 +13,18 @@ namespace WPF_Auto_Update
     /// </summary>
     public partial class App : Application
     {
+        private void Application_Startup(object sender, StartupEventArgs e)
+        {
+            if(e.Args.Length > 0)
+            {
+                for (int i = 0; i < e.Args.Length; i++)
+                {
+                    string[] arguments = e.Args[i].Split('=');
+                    string key = arguments[0];
+                    string value = arguments[1];
+                    Resources.Add(key, value);
+                }
+            }
+        }
     }
 }
