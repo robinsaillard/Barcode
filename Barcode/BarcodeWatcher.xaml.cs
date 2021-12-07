@@ -18,6 +18,7 @@ using System.Net;
 using System.IO;
 using System.Runtime.InteropServices;
 using WPF_Auto_Update;
+using System.Threading;
 
 namespace Barcode
 {
@@ -256,9 +257,12 @@ namespace Barcode
                 if (result == System.Windows.Forms.DialogResult.Yes)
                 {
                     // Closes the parent form.
-                    this.updater.CurrentApp = this; 
-                    this.updater.Releases = releases;
-                    this.updater.CheckForUpdates();
+                    //this.updater.CurrentApp = this; 
+                    //updater.Releases = releases;
+                    // Thread thread1 = new Thread(new Updater());
+                    // thread1.Start();
+                    Process.Start("WPF_Auto_Update.exe");
+
 
                 }
 

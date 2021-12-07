@@ -10,26 +10,28 @@ using System.Windows;
 
 namespace WPF_Auto_Update
 {
-    public class Updater
+    public class Updater : Window
     { 
-        public IReadOnlyList<Release> Releases { get; set; }
+        public static IReadOnlyList<Release> Releases { get; set; }
         public static Duration UpdateTimeout { get; set; } = TimeSpan.FromSeconds(30);
         public Window CurrentApp { get; set; }
 
-        public async void CheckForUpdates()
+        /*static async void Main(string[] args)
         {
             try
             {
+                GitHubClient client = new GitHubClient(new ProductHeaderValue("robinsaillard"));
+                IReadOnlyList<Release> releases = await client.Repository.Release.GetAll("robinsaillard", "Barcode");
                 var progressControl = new MainWindow();
                 WebClient webClient = new WebClient();
-                webClient.DownloadProgressChanged += (sender, args) => {
-                    progressControl.progressBar.Value = args.ProgressPercentage;
+                webClient.DownloadProgressChanged += (sender, argus) => {
+                    progressControl.progressBar.Value = argus.ProgressPercentage;
                 };
 
                 progressControl.Show();
-                CurrentApp.Close(); 
+                //CurrentApp.Close(); 
                 var assets = Releases[0].Assets;
-                var path_dir = ".";
+                var path_dir = "./";
                 if (!Directory.Exists(path_dir)) Directory.CreateDirectory(path_dir);
                 var i = 1;
                 foreach (var asset in assets)
@@ -49,6 +51,6 @@ namespace WPF_Auto_Update
               
                 throw;
             }
-        }
+        }*/
     }
 }
