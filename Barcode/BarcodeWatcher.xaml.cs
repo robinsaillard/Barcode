@@ -25,8 +25,9 @@ namespace Barcode
         private IIinputDevice device = null;
         private string log = "";
         private int i = 0;
-        private KeyConvertor keyconvertor = new KeyConvertor();
+        private KeyConvertor keyConvertor = new KeyConvertor();
         private WebDriver driver;
+        private readonly Dictionary<int, List<string>> dict = KeyConvertor.Keys; 
 
 
         public BarcodeWatcher()
@@ -109,7 +110,7 @@ namespace Barcode
                 if (this.device is HidKeyboard && !e.IsButtonDown && e.RawInput.keyboard.MakeCode != 0)
                 {
                     this.Activate();
-                    var dict = keyconvertor.getDictionary();
+                    //var dict = keyconvertor.getDictionary();
                     if (this.i == 0 && e.RawInput.keyboard.MakeCode == 42)
                     {
                         this.i = 1;
