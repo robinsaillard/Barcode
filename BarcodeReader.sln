@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31911.196
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BarcodeReader", "BarcodeReader\BarcodeReader.csproj", "{A42B5D3B-64EC-4DB1-8670-67ABD81F859F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPF_Auto_Update", "..\Barcode\WPF_Auto_Update\WPF_Auto_Update.csproj", "{3865E845-9721-47B2-B000-A1F54E9857EC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		2.0.0|Any CPU = 2.0.0|Any CPU
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A42B5D3B-64EC-4DB1-8670-67ABD81F859F}.2.0.0|Any CPU.ActiveCfg = 2.0.0|Any CPU
+		{A42B5D3B-64EC-4DB1-8670-67ABD81F859F}.2.0.0|Any CPU.Build.0 = 2.0.0|Any CPU
+		{A42B5D3B-64EC-4DB1-8670-67ABD81F859F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A42B5D3B-64EC-4DB1-8670-67ABD81F859F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A42B5D3B-64EC-4DB1-8670-67ABD81F859F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A42B5D3B-64EC-4DB1-8670-67ABD81F859F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3865E845-9721-47B2-B000-A1F54E9857EC}.2.0.0|Any CPU.ActiveCfg = 2.0.0|Any CPU
+		{3865E845-9721-47B2-B000-A1F54E9857EC}.2.0.0|Any CPU.Build.0 = 2.0.0|Any CPU
+		{3865E845-9721-47B2-B000-A1F54E9857EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3865E845-9721-47B2-B000-A1F54E9857EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3865E845-9721-47B2-B000-A1F54E9857EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3865E845-9721-47B2-B000-A1F54E9857EC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {635DFC45-3600-4A98-8851-E6C428C33D71}
+	EndGlobalSection
+EndGlobal
