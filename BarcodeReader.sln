@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.31911.196
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BarcodeReader", "BarcodeReader\BarcodeReader.csproj", "{A42B5D3B-64EC-4DB1-8670-67ABD81F859F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPF_Auto_Update", "..\Barcode\WPF_Auto_Update\WPF_Auto_Update.csproj", "{3865E845-9721-47B2-B000-A1F54E9857EC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoUpdater", "AutoUpdater\AutoUpdater.csproj", "{9EE5E05C-E9A2-42C7-AD70-4FB0E039844D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,12 +20,12 @@ Global
 		{A42B5D3B-64EC-4DB1-8670-67ABD81F859F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A42B5D3B-64EC-4DB1-8670-67ABD81F859F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A42B5D3B-64EC-4DB1-8670-67ABD81F859F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3865E845-9721-47B2-B000-A1F54E9857EC}.2.0.0|Any CPU.ActiveCfg = 2.0.0|Any CPU
-		{3865E845-9721-47B2-B000-A1F54E9857EC}.2.0.0|Any CPU.Build.0 = 2.0.0|Any CPU
-		{3865E845-9721-47B2-B000-A1F54E9857EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3865E845-9721-47B2-B000-A1F54E9857EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3865E845-9721-47B2-B000-A1F54E9857EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3865E845-9721-47B2-B000-A1F54E9857EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9EE5E05C-E9A2-42C7-AD70-4FB0E039844D}.2.0.0|Any CPU.ActiveCfg = Debug|Any CPU
+		{9EE5E05C-E9A2-42C7-AD70-4FB0E039844D}.2.0.0|Any CPU.Build.0 = Debug|Any CPU
+		{9EE5E05C-E9A2-42C7-AD70-4FB0E039844D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9EE5E05C-E9A2-42C7-AD70-4FB0E039844D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9EE5E05C-E9A2-42C7-AD70-4FB0E039844D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9EE5E05C-E9A2-42C7-AD70-4FB0E039844D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

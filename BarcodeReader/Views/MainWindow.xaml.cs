@@ -21,7 +21,7 @@ namespace BarcodeReader.Views
         private void CheckUpdate()
         {
             Version localVersion = ApplicationInfo.CurrentVersion;
-            ProcessStartInfo updater = new ProcessStartInfo("WPF_Auto_Update.exe");
+            ProcessStartInfo updater = new ProcessStartInfo("AutoUpdater.exe");
             updater.WindowStyle = ProcessWindowStyle.Normal;
             updater.Arguments = "name=" + ApplicationInfo.AppName + " version=" + localVersion;
             Process.Start(updater);
