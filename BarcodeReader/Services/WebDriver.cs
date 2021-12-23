@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
@@ -44,10 +45,8 @@ namespace BarcodeReader.Services
                     var driverService = ChromeDriverService.CreateDefaultService(DRIVER_DIR);
                     driverService.HideCommandPromptWindow = true;
 
-                    this.chromeOptions = new ChromeOptions();
+                    CreateChromeOptions();
 
-                    //chromeOptions.AddAdditionalChromeOption("excludeSwitches", new List<string>() { "enable-logging" });
-                    this.chromeOptions.AddUserProfilePreference("download.default_directory", @"C:\Users\dev\Documents");
                     this.driver = new ChromeDriver(driverService, this.chromeOptions);
                     var windowWidth = SystemParameters.PrimaryScreenWidth;
                     this.driver.Manage().Window.Position = new System.Drawing.Point(Convert.ToInt32(windowWidth / 2), 1);
@@ -144,6 +143,28 @@ namespace BarcodeReader.Services
         public void OpenLink(string url)
         {
             this.driver.Navigate().GoToUrl(url);
+        }
+
+        public void CreateChromeOptions()
+        {
+            this.chromeOptions = new ChromeOptions();
+
+            List<string> ls = new List<string>();
+            ls.Add("enable-logging");
+            this.chromeOptions.AddExcludedArguments(ls);
+            this.chromeOptions.AddArgument("--ignore-certificate-errors");
+            this.chromeOptions.AddArgument("--disable-popup-blocking");
+            this.chromeOptions.AddArguments("--no-sandbox");
+            this.chromeOptions.AddUserProfilePreference("download.default_directory", @"C:\Users\dev\Documents");
+            this.chromeOptions.AddUserProfilePreference("download.download_restrictions", 0);
+            this.chromeOptions.AddUserProfilePreference("download.prompt_for_download", false);
+            this.chromeOptions.AddUserProfilePreference("download.directory_upgrade", true);
+            this.chromeOptions.AddUserProfilePreference("safebrowsing_for_trusted_sources_enabled", true);
+            this.chromeOptions.AddUserProfilePreference("safebrowsing.enabled", true);
+            this.chromeOptions.AddUserProfilePreference("download.open_pdf_in_system_reader", false);
+            this.chromeOptions.AddUserProfilePreference("plugins.always_open_pdf_externally", true);
+
+            this.chromeOptions.AddExtension(@"./extension.crx");
         }
     }
 }
