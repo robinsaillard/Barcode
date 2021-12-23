@@ -145,7 +145,7 @@ namespace BarcodeReader.Views
             };
             link.Inlines.Add(linkName);
             link.NavigateUri = new Uri(linkURL);
-            link.RequestNavigate += (sender, args) => Process.Start(args.Uri.ToString());
+            link.RequestNavigate += (sender, args) => driver.OpenLink(args.Uri.ToString());
 
             para.Inlines.Add(new Run("[" + DateTime.Now.ToLongTimeString() + "]: "));
             para.Inlines.Add(TextBeforeLink);
