@@ -16,19 +16,22 @@ namespace BarcodeReader.Services
     {
         private static readonly string DRIVER_DIR = "./chromedriver/";
         private readonly string version_chrome;
-        private IWebDriver driver;
+        public IWebDriver driver;
         private ChromeOptions chromeOptions;
 
         public WebDriver()
         {
-            this.version_chrome = GetChromeVersion();
-            if (this.version_chrome != null)
+            if (driver == null) 
             {
-                GetDriver();
-            }
-            else
-            {
-                new Exception("Impossible de trouver la version de chrome");
+                this.version_chrome = GetChromeVersion();
+                if (this.version_chrome != null)
+                {
+                    GetDriver();
+                }
+                else
+                {
+                    new Exception("Impossible de trouver la version de chrome");
+                }
             }
         }
 
@@ -97,6 +100,10 @@ namespace BarcodeReader.Services
             }
         }
 
+        public IWebDriver GetCurrentDriver()
+        {
+            return driver;
+        }
 
         public string GetChromeVersion()
         {
@@ -125,8 +132,6 @@ namespace BarcodeReader.Services
                 }
             }
            
-
-
             Process[] cmd = Process.GetProcessesByName("cmd");
             Process[] chromeDriver = Process.GetProcessesByName("chromedriver");
 
@@ -140,9 +145,18 @@ namespace BarcodeReader.Services
             }
         }
 
+
         public void OpenLink(string url)
         {
-            this.driver.Navigate().GoToUrl(url);
+            try
+            {
+                this.driver.Navigate().GoToUrl(url);
+            }
+            catch (Exception)
+            {
+                GetDriver();
+                this.driver.Navigate().GoToUrl(url);
+            }         
         }
 
         public void CreateChromeOptions()

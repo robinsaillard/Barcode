@@ -31,7 +31,9 @@ namespace BarcodeReader.Views
         {
             InitializeComponent();
             Rtb.IsDocumentEnabled = true;
-            Rtb.Document.Blocks.FirstBlock.Margin = new Thickness(0);
+            string[] listFile = { "colissimo", "test" };
+            DirectoryWatcher watcher = new DirectoryWatcher(@"C:\Users\dev\Documents", listFile, "pdf");
+            //Rtb.Document.Blocks.FirstBlock.Margin = new Thickness(0);
         }
 
         private void OnStartScan(object sender, RoutedEventArgs e)
