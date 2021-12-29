@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
@@ -27,18 +29,32 @@ namespace BarcodeReader.Views
         private int i = 0;
         private string log = "";
 
+
         public ScanView()
         {
             InitializeComponent();
             Rtb.IsDocumentEnabled = true;
             string[] listFile = { "colissimo", "test" };
+            string sSQL = "SELECT Variable, Value FROM Options where [Variable] = @variable";
+            SqlConnection bdd = DbManager.Get_DB_Connection();
+            var param = new Dictionary<string, string>
+            {
+                { "Variable", "PDF_FILENAME" }
+            };
+            //DataSet1 dataSet1 = new DataSet1(); 
+            //var request = dataSet1.get
+            SqlDataReader tbl = DbManager.FindAllBy(bdd, "Options", param);
+            Object[] values = new Object[tbl.FieldCount];
+            int fieldCount = tbl.GetValues(values);
+         
+
             DirectoryWatcher watcher = new DirectoryWatcher(@"C:\Users\dev\Documents", listFile, "pdf");
-            //Rtb.Document.Blocks.FirstBlock.Margin = new Thickness(0);
         }
 
         private void OnStartScan(object sender, RoutedEventArgs e)
         {
             UpdateStatutScanCode();
+           
             if (device != null)
             {
                 var converter = new BrushConverter();
