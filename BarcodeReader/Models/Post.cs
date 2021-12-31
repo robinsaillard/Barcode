@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace BarcodeReader.Models
 {
-    public class Options
+    public class Posts
     {
         public int Id { get; set; }
-        public int Post { get; set; }
-        public string Variable { get; set; }
-        public string Value { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
     }
 }

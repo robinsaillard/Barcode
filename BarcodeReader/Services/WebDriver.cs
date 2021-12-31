@@ -18,9 +18,11 @@ namespace BarcodeReader.Services
         private readonly string version_chrome;
         public IWebDriver driver;
         private ChromeOptions chromeOptions;
+        public string Directory { get; set; }
 
-        public WebDriver()
+        public WebDriver(string directory)
         {
+            Directory = directory;
             if (driver == null) 
             {
                 this.version_chrome = GetChromeVersion();
@@ -95,7 +97,7 @@ namespace BarcodeReader.Services
                 }
                 catch (Exception)
                 {
-                    if (!Directory.Exists(path_dir)) Directory.CreateDirectory(path_dir);
+                    if (!System.IO.Directory.Exists(path_dir)) System.IO.Directory.CreateDirectory(path_dir);
                 }
             }
         }
@@ -169,7 +171,7 @@ namespace BarcodeReader.Services
             this.chromeOptions.AddArgument("--ignore-certificate-errors");
             this.chromeOptions.AddArgument("--disable-popup-blocking");
             this.chromeOptions.AddArguments("--no-sandbox");
-            this.chromeOptions.AddUserProfilePreference("download.default_directory", @"C:\Users\dev\Documents");
+            this.chromeOptions.AddUserProfilePreference("download.default_directory", Directory);
             this.chromeOptions.AddUserProfilePreference("download.download_restrictions", 0);
             this.chromeOptions.AddUserProfilePreference("download.prompt_for_download", false);
             this.chromeOptions.AddUserProfilePreference("download.directory_upgrade", true);

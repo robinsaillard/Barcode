@@ -5,12 +5,15 @@ using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
+
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Media;
+using BarcodeReader.Models;
 using BarcodeReader.Services;
 using Djlastnight.Hid;
 using Djlastnight.Input;
+using UserControl = System.Windows.Controls.UserControl;
 
 namespace BarcodeReader.Views
 {
@@ -28,27 +31,28 @@ namespace BarcodeReader.Views
         private Window window;
         private int i = 0;
         private string log = "";
-
+        Dictionary<string, Options> options;
 
         public ScanView()
         {
             InitializeComponent();
             Rtb.IsDocumentEnabled = true;
-            string[] listFile = { "colissimo", "test" };
-            string sSQL = "SELECT Variable, Value FROM Options where [Variable] = @variable";
-            SqlConnection bdd = DbManager.Get_DB_Connection();
-            var param = new Dictionary<string, string>
-            {
-                { "Variable", "PDF_FILENAME" }
-            };
-            //DataSet1 dataSet1 = new DataSet1(); 
-            //var request = dataSet1.get
-            SqlDataReader tbl = DbManager.FindAllBy(bdd, "Options", param);
-            Object[] values = new Object[tbl.FieldCount];
-            int fieldCount = tbl.GetValues(values);
-         
 
-            DirectoryWatcher watcher = new DirectoryWatcher(@"C:\Users\dev\Documents", listFile, "pdf");
+            string postName = Environment.MachineName.ToString();
+
+            if (!DbManager.PostNameExist(postName))
+            {
+                DbManager.InsertPost(postName);
+            }
+
+            options = DbManager.GetOptions(postName);
+            string values = options["PDF_FILENAME"].Value;
+            string directory = options["DOWNLOAD_DIRECTORY"].Value;
+            string ext = options["PDF_EXTENSION"].Value;
+            string printer = options["PRINTER_NAME"].Value;
+            string[] listFile = values.Split(';');
+
+            DirectoryWatcher watcher = new DirectoryWatcher(directory, listFile, ext, printer);
         }
 
         private void OnStartScan(object sender, RoutedEventArgs e)
@@ -59,7 +63,8 @@ namespace BarcodeReader.Views
             {
                 var converter = new BrushConverter();
                 var color = (Brush)converter.ConvertFromString("#2196f3");
-                driver = new WebDriver();
+                string directory = options["DOWNLOAD_DIRECTORY"].Value;
+                driver = new WebDriver(directory);
                 string version = driver.GetChromeVersion();
                 Rtb.Document.Blocks.Add(new Paragraph(
                 new Run(string.Format(

@@ -1,8 +1,13 @@
-﻿using System;
+﻿using BarcodeReader.Database;
+using BarcodeReader.Models;
+using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,63 +16,109 @@ namespace BarcodeReader.Services
     public static class DbManager
     {
 
-
-        public static SqlConnection Get_DB_Connection()
+        public static Dictionary<string, Options> GetOptions(string postName)
         {
-           /* string connString = @"Data Source=(LocalDB)\MSSQLLocalDB;
-                    AttachDbFilename=" + AppDomain.CurrentDomain.BaseDirectory +
-                    "Data\\Database.mdf" + ";Integrated Security = True; "; */
-            string connString = @"Data Source=(LocalDB)\MSSQLLocalDB;
-                    AttachDbFilename=|DataDirectory|\Data\Database.mdf;Integrated Security = True; ";
-            SqlConnection bdd = new SqlConnection(connString);
-            if (bdd.State != ConnectionState.Open) bdd.Open();
-
-            return bdd;
-        }
-
-        public static DataTable Get_DataTable(string SQL_Text, string table,  SqlConnection bdd)
-        {
-            SqlCommand cmd = bdd.CreateCommand();
-            cmd.CommandText = SQL_Text;
-            SqlDataAdapter sda = new SqlDataAdapter(cmd);
-            DataTable dt = new DataTable(table);
-            sda.Fill(dt);
-            return dt;
-        }
-
-        public static SqlDataReader FindAllBy(SqlConnection bdd, string table, Dictionary<string,string> parameters = null)
-        {
-            string sqlquery = "SELECT * FROM " + table;
-
-            if(parameters != null)
+            var list = new Dictionary<string, Options>();
+            string sql = "SELECT o.Id, o.Post, o.Variable, o.Value FROM Options AS o INNER JOIN Posts AS p ON (o.Post = p.Id) WHERE p.Name = '" + postName + "'";
+            MySqlConnection conn = DBUtils.GetDBConnection();
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand();        
+            try
             {
-                int i = 0;
-                sqlquery = sqlquery + " WHERE ";
-                foreach (var param in parameters)
+                cmd.Connection = conn;
+                cmd.CommandText = sql;
+                using (var reader = cmd.ExecuteReader())
                 {
-                    if(i != 0) {
-                        sqlquery = sqlquery + " AND ";
+               
+                    while (reader.Read())
+                        list[reader.GetString(2)] = new Options {
+                            Id = reader.GetInt32(0),
+                            Post = reader.GetInt32(1), 
+                            Variable = reader.GetString(2), 
+                            Value = reader.GetString(3) 
+                        };
+                }
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error: " + e);
+                Console.WriteLine(e.StackTrace);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+           
+            return list;
+        }
+
+        public static bool PostNameExist(string postName)
+        {
+            string sql = "SELECT Name FROM Posts WHERE Name = '" + postName + "'";
+            MySqlConnection conn = DBUtils.GetDBConnection();
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand();    
+            try
+            {
+                cmd.Connection = conn;
+                cmd.CommandText = sql;
+                using (var reader = cmd.ExecuteReader())
+                {
+
+                    while (reader.Read())
+                    {
+                        if(reader.GetString(0) == postName)
+                        {
+                            return true;
+                        }
                     }
-                    sqlquery = sqlquery + "[" + param.Key + "] = '" + param.Value + "'";
-                    i++;
+                       
                 }
             }
-            SqlCommand command = new SqlCommand(sqlquery, bdd);
-            SqlDataReader sReader;
-            sReader = command.ExecuteReader();
-            return sReader;
+            catch (Exception)
+            {
+                throw;
+            }
+            return false; 
         }
 
-        public static SqlDataReader Execute_SQL(string SQL_Text, SqlConnection bdd)
-        {
-            SqlCommand cmd_Command = new SqlCommand(SQL_Text, bdd);
-            return cmd_Command.ExecuteReader();
-        }
 
-        public static void Close_DB_Connection(SqlConnection bdd)
+
+        public static void InsertPost(string name)
         {
-            bdd = Get_DB_Connection();
-            if (bdd.State != ConnectionState.Closed) bdd.Close();
+            if(!PostNameExist(name))
+            {
+                MySqlConnection conn = DBUtils.GetDBConnection();
+                conn.Open();
+                try
+                {
+                    string sql = "INSERT INTO Posts (Name) VALUES(@Name); SELECT LAST_INSERT_ID();";
+                    MySqlCommand cmd = new MySqlCommand();
+                    cmd.Connection = conn;
+                    cmd.CommandText = sql;
+                    MySqlParameter gradeParam = new MySqlParameter("@Name", name);
+                    cmd.Parameters.Add(gradeParam);
+
+                    int id = Convert.ToInt32(cmd.ExecuteScalar());
+                    string sqlOptions = "INSERT INTO Options (Post, Variable, Value) VALUES " +
+                        $"({id}, 'PDF_FILENAME', 'colissimo;prepa')," +
+                        $"({id}, 'DOWNLOAD_DIRECTORY', 'C:\\\\Users\\\\dev\\\\Downloads')," +
+                        $"({id}, 'PRINTER_NAME', 'Adobe PDF')," +
+                        $"({id}, 'PDF_EXTENSION', 'pdf')";
+
+                    MySqlCommand cmdOptions = new MySqlCommand();
+                    cmdOptions.Connection = conn;
+                    cmdOptions.CommandText = sqlOptions; 
+                    int rowCount = cmdOptions.ExecuteNonQuery();
+                }
+                catch (Exception e)
+                {
+
+                    throw;
+                }
+            }
         }
 
     }
