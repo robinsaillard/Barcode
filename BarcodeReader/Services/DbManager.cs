@@ -94,6 +94,7 @@ namespace BarcodeReader.Services
                 conn.Open();
                 try
                 {
+
                     string sql = "INSERT INTO Posts (Name) VALUES(@Name); SELECT LAST_INSERT_ID();";
                     MySqlCommand cmd = new MySqlCommand();
                     cmd.Connection = conn;
@@ -102,9 +103,10 @@ namespace BarcodeReader.Services
                     cmd.Parameters.Add(gradeParam);
 
                     int id = Convert.ToInt32(cmd.ExecuteScalar());
+                    string downloadsPath = KnownFolders.GetPath(KnownFolder.Downloads);
                     string sqlOptions = "INSERT INTO Options (Post, Variable, Value) VALUES " +
                         $"({id}, 'PDF_FILENAME', 'colissimo;prepa')," +
-                        $"({id}, 'DOWNLOAD_DIRECTORY', 'C:\\\\Users\\\\dev\\\\Downloads')," +
+                        $"({id}, 'DOWNLOAD_DIRECTORY', {downloadsPath} )," +
                         $"({id}, 'PRINTER_NAME', 'Adobe PDF')," +
                         $"({id}, 'PDF_EXTENSION', 'pdf')";
 
