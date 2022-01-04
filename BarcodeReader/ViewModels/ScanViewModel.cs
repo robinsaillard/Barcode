@@ -8,6 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Media;
 
 namespace BarcodeReader.ViewModels
@@ -38,6 +40,7 @@ namespace BarcodeReader.ViewModels
         private void OnDriverStatut(string obj)
         {
             UpdateStatutScanCode();
+
             if (StartBtn)
             {
                 StopBtn = true;
@@ -51,8 +54,11 @@ namespace BarcodeReader.ViewModels
                 StopBtn = false;
                 DeviceId = "";
                 StatutColor = red;
+                StatutText = "OFF";
             }
         }
+
+        
 
         private void OnHidDataReceived(object sender, HidEvent e)
         {
@@ -144,15 +150,12 @@ namespace BarcodeReader.ViewModels
                 {
                     Device = device;
                     DeviceId = device.DeviceID;
+                    StatutText = "ON";
                     StatutColor = green;
-                    /* var color_green = (Brush)converter.ConvertFromString(green);
-                   StatutScanner.Background = color_green;
-                    StatutScanner.Content = "On";
-                    BtnStart.IsEnabled = false;
-                    BtnStop.IsEnabled = true;
-                    D*/
+                    RtbContent = "Test";
                 }
             }
+
           /*  if (Device == null)
             {
                 var color_red = (Brush)converter.ConvertFromString(red);
@@ -194,6 +197,20 @@ namespace BarcodeReader.ViewModels
         {
             get => _statutColor;
             set => SetProperty(ref _statutColor, value);
+        }
+
+        private string _statutText;
+        public string StatutText
+        {
+            get => _statutText;
+            set => SetProperty(ref _statutText, value);
+        }
+
+        private string _rtbContent;
+        public string RtbContent
+        {
+            get => _rtbContent;
+            set => SetProperty(ref _rtbContent, value);
         }
     }   
 }

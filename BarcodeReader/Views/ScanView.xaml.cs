@@ -37,7 +37,7 @@ namespace BarcodeReader.Views
         {
             InitializeComponent();
            
-            Rtb.IsDocumentEnabled = true;
+//            Rtb.IsDocumentEnabled = true;
 
             string postName = Environment.MachineName.ToString();
 
@@ -69,11 +69,11 @@ namespace BarcodeReader.Views
                 string directory = options["DOWNLOAD_DIRECTORY"].Value;
                 driver = new WebDriver(directory);
                 string version = driver.GetChromeVersion();
-                Rtb.Document.Blocks.Add(new Paragraph(
+               /* Rtb.Document.Blocks.Add(new Paragraph(
                 new Run(string.Format(
                    "========================================= Démarrage {0} ========================================== ", ApplicationInfo.AppNameVersion
                 ))
-                { Foreground = Brushes.White, Background = color}));
+                { Foreground = Brushes.White, Background = color}));*/
                 BtnStart.Content = "Démarrer";
                 window = Window.GetWindow(this);
                 reader = new HidDataReader(window);
@@ -83,7 +83,7 @@ namespace BarcodeReader.Views
             {
                 Paragraph paragraph = new Paragraph();
                 paragraph.Inlines.Add(new Run(string.Format("Erreur : Verifiez les branchements USB de la zapette/douchette")));
-                Rtb.Document.Blocks.Add(paragraph);
+              //  Rtb.Document.Blocks.Add(paragraph);
             }
         }
 
@@ -91,11 +91,11 @@ namespace BarcodeReader.Views
         {
             var converter = new BrushConverter();
             var color = (Brush)converter.ConvertFromString("#2196f3");
-            Rtb.Document.Blocks.Add(new Paragraph(
+          /*  Rtb.Document.Blocks.Add(new Paragraph(
                 new Run(string.Format(
                     "==========================================    Stop  {0}     ==========================================", ApplicationInfo.AppNameVersion
                 )) 
-                { Foreground = Brushes.White, Background = color }));
+                { Foreground = Brushes.White, Background = color }));*/
             BtnStop.IsEnabled = false;
             BtnStart.IsEnabled = true;
            
@@ -154,7 +154,7 @@ namespace BarcodeReader.Views
             }
             catch (Exception ex)
             {
-                Rtb.Document.Blocks.Add(new Paragraph(new Run("Error: " + ex.Message) { Foreground = Brushes.Red, Background = Brushes.Black }));
+            //    Rtb.Document.Blocks.Add(new Paragraph(new Run("Error: " + ex.Message) { Foreground = Brushes.Red, Background = Brushes.Black }));
             }
         }
 
@@ -179,7 +179,7 @@ namespace BarcodeReader.Views
             para.Inlines.Add(link);
             para.Inlines.Add(new Run(TextAfterLink));
 
-            Rtb.Document.Blocks.Add(para);
+         //   Rtb.Document.Blocks.Add(para);
             Scrollviewer.ScrollToEnd();
         }
 

@@ -165,6 +165,7 @@
     <Compile Include="App_Code\Config.cs" />
     <Compile Include="App_Code\Expansive.cs" />
     <Compile Include="Commands\CommandView.cs" />
+    <Compile Include="Controls\RichTextViewer.cs" />
     <Compile Include="Database\DBMySQLUtils.cs" />
     <Compile Include="Database\DBUtils.cs" />
     <Compile Include="Models\Historique.cs" />
