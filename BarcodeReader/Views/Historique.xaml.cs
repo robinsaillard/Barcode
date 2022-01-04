@@ -20,21 +20,15 @@ namespace BarcodeReader.Views
     /// <summary>
     /// Logique d'interaction pour OptionView.xaml
     /// </summary>
-    public partial class OptionView : UserControl
+    public partial class HistoriqueView : UserControl
     {
-        public OptionView()
+        public HistoriqueView()
         {
-            string postName = Environment.MachineName.ToString();
 
-            if (!DbManager.PostNameExist(postName))
-            {
-                DbManager.InsertPost(postName);
-            }
-
-            List<Options> options = DbManager.GetOptions(postName).Values.ToList();
+            List<Historique> historique = DbManager.GetScanList();
 
             InitializeComponent();
-            DataGridOptionsView.ItemsSource = options;
+            DataGridHistoriqueView.ItemsSource = historique;
         }
     }
 }

@@ -25,6 +25,9 @@
         <DataTemplate DataType="{x:Type vm:OptionsViewModel}">
             <views:OptionView />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:HistoriqueViewModel}">
+            <views:HistoriqueView />
+        </DataTemplate>
     </Window.Resources>
     
     <Grid>
@@ -41,6 +44,11 @@
             <MenuItem Header="Options" x:Name="btnOptions" Command="{Binding NavCommand}"  CommandParameter = "options" Foreground="white">
                 <MenuItem.Icon>
                     <materialDesign:PackIcon Kind="TuneVariant" Margin="0"/>
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="Historique" x:Name="btnHistorique" Command="{Binding NavCommand}"  CommandParameter = "historique" Foreground="white">
+                <MenuItem.Icon>
+                    <materialDesign:PackIcon Kind="History" Margin="0"/>
                 </MenuItem.Icon>
             </MenuItem>
         </Menu>

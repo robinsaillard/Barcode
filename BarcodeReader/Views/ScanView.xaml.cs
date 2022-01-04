@@ -36,6 +36,7 @@ namespace BarcodeReader.Views
         public ScanView()
         {
             InitializeComponent();
+           
             Rtb.IsDocumentEnabled = true;
 
             string postName = Environment.MachineName.ToString();
@@ -53,6 +54,8 @@ namespace BarcodeReader.Views
             string[] listFile = values.Split(';');
 
             DirectoryWatcher watcher = new DirectoryWatcher(directory, listFile, ext, printer);
+            
+
         }
 
         private void OnStartScan(object sender, RoutedEventArgs e)
@@ -143,6 +146,7 @@ namespace BarcodeReader.Views
                         var web = "http://";
                         AddHyperlinkText(web + this.log, this.log, "", "");
                         driver.OpenLink(web + this.log);
+                        DbManager.InsertScanList(this.log);
                         this.log = "";
 
                     }

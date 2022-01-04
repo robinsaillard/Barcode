@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             xmlns:local="clr-namespace:BarcodeReader.Views"
+             xmlns:local="clr-namespace:BarcodeReader.Views" xmlns:viewmodels="clr-namespace:BarcodeReader.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:ScanViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              >
@@ -12,6 +12,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="80px"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="80px"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" Margin="10">
             <Grid.ColumnDefinitions>
@@ -26,8 +27,8 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" Text="Statut" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/>
-                <Label Grid.Row="1" Content="Off" 
-                            Background="#e53935" Foreground="White" 
+                <Label Grid.Row="1" Content="{Binding StatutText}" 
+                            Background="{Binding StatutColor}" Foreground="White" 
                             HorizontalAlignment="Center" VerticalAlignment="Center" 
                             Padding="5,5,5,5" x:Name="StatutScanner"/>
 
@@ -39,7 +40,7 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0" Text="Zapette / Douchette" VerticalAlignment="Center" Margin="15,0,0,0"/>
-                <TextBox Grid.Column="1" x:Name="DeviceId" IsReadOnly="True" Text="" Height="25px" VerticalAlignment="Center" Margin="15,0,15,0"/>
+                <TextBox Grid.Column="1" x:Name="DeviceId" IsReadOnly="True" Text="{Binding DeviceId}" Height="25px" VerticalAlignment="Center" Margin="15,0,15,0"/>
             </Grid>
             <Grid Grid.Column="2">
                 <Grid.RowDefinitions>
@@ -60,6 +61,19 @@
                              />
             </ScrollViewer>
             </materialDesign:Card>
+        </Grid>
+        <Grid  Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+                <Button Grid.Row="0" Content="Démarrer" x:Name="BtnStart2" Command="{Binding DriverStatut}" IsEnabled="{Binding StartBtn}" CommandParameter="true" VerticalAlignment="Center" Margin="15,0,15,0"/>
+            </Grid>
+            <Grid Grid.Column="1">
+                <Button Grid.Row="1" Content="Stop" x:Name="BtnStop2" Command="{Binding DriverStatut}" IsEnabled="{Binding StopBtn}" CommandParameter="true" VerticalAlignment="Center" Margin="15,0,15,0"/>
+            </Grid>
+            
         </Grid>
     </Grid>
 </UserControl>
