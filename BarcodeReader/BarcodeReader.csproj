@@ -165,6 +165,7 @@
     <Compile Include="App_Code\Config.cs" />
     <Compile Include="App_Code\Expansive.cs" />
     <Compile Include="Commands\CommandView.cs" />
+    <Compile Include="Controls\Helper.cs" />
     <Compile Include="Controls\RichTextViewer.cs" />
     <Compile Include="Database\DBMySQLUtils.cs" />
     <Compile Include="Database\DBUtils.cs" />
@@ -175,6 +176,7 @@
     <Compile Include="Services\DbManager.cs" />
     <Compile Include="Services\DirectoryWatcher.cs" />
     <Compile Include="Services\KeyConvertor.cs" />
+    <Compile Include="Services\KnownFolders.cs" />
     <Compile Include="Services\WebDriver.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\HistoriqueViewModel.cs" />

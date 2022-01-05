@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -13,7 +14,7 @@ namespace BarcodeReader.Controls
 
         public static readonly DependencyProperty RichTextProperty =
             DependencyProperty.Register(RichTextPropertyName,
-                                        typeof(string),
+                                        typeof(object),
                                         typeof(RichTextBox),
                                         new PropertyMetadata(
                                             new PropertyChangedCallback
@@ -24,20 +25,36 @@ namespace BarcodeReader.Controls
             IsReadOnly = true;
             Background = new SolidColorBrush { Opacity = 0 };
             BorderThickness = new Thickness(0);
+            IsDocumentEnabled = true;
         }
 
-        public string RichText
+        public object RichText
         {
-            get { return (string)GetValue(RichTextProperty); }
+            get { return (object)GetValue(RichTextProperty); }
             set { SetValue(RichTextProperty, value); }
         }
 
         private static void RichTextPropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
         {
-            Paragraph paragraph = new Paragraph();
-            paragraph.Inlines.Add(new Run(string.Format((string)dependencyPropertyChangedEventArgs.NewValue)));
-            ((RichTextBox)dependencyObject).Document.Blocks.Add(paragraph);
-
+            Paragraph paragraph = new Paragraph()
+            {
+                Margin = new Thickness(0)
+            };
+            paragraph.Inlines.Add(new Run("[" + DateTime.Now.ToLongTimeString() + "]: "));
+            if (dependencyPropertyChangedEventArgs.NewValue is string @string)
+            {             
+                paragraph.Inlines.Add(new Run(string.Format(@string)));
+                ((RichTextBox)dependencyObject).Document.Blocks.Add(paragraph);
+            }
+            if(dependencyPropertyChangedEventArgs.NewValue is Paragraph paragraphVal)
+            {
+                ((RichTextBox)dependencyObject).Document.Blocks.Add(paragraphVal);
+            }
+            if(dependencyPropertyChangedEventArgs.NewValue is Run run)
+            {
+                paragraph.Inlines.Add(run);
+                ((RichTextBox)dependencyObject).Document.Blocks.Add(paragraph);
+            }
         }
     }
 }

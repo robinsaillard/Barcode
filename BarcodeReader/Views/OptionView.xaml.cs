@@ -24,17 +24,7 @@ namespace BarcodeReader.Views
     {
         public OptionView()
         {
-            string postName = Environment.MachineName.ToString();
-
-            if (!DbManager.PostNameExist(postName))
-            {
-                DbManager.InsertPost(postName);
-            }
-
-            List<Options> options = DbManager.GetOptions(postName).Values.ToList();
-
             InitializeComponent();
-            DataGridOptionsView.ItemsSource = options;
         }
     }
 }
