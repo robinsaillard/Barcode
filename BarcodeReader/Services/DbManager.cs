@@ -3,13 +3,6 @@ using BarcodeReader.Models;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.Common;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BarcodeReader.Services
 {
@@ -50,7 +43,7 @@ namespace BarcodeReader.Services
                 conn.Close();
                 conn.Dispose();
             }
-           
+            
             return list;
         }
 
@@ -110,9 +103,11 @@ namespace BarcodeReader.Services
                         $"({id}, 'PRINTER_NAME', 'Adobe PDF')," +
                         $"({id}, 'PDF_EXTENSION', 'pdf')";
 
-                    MySqlCommand cmdOptions = new MySqlCommand();
-                    cmdOptions.Connection = conn;
-                    cmdOptions.CommandText = sqlOptions; 
+                    MySqlCommand cmdOptions = new MySqlCommand
+                    {
+                        Connection = conn,
+                        CommandText = sqlOptions
+                    };
                     int rowCount = cmdOptions.ExecuteNonQuery();
                 }
                 catch (Exception e)
@@ -121,6 +116,67 @@ namespace BarcodeReader.Services
                     throw;
                 }
             }
+        }
+
+        public static void InsertScanList(string url)
+        {
+            MySqlConnection conn = DBUtils.GetDBConnection();
+            conn.Open();
+            try
+            {
+                string sql = "INSERT INTO ScanList (Url, Date) VALUES(@Url, @Date)";
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = conn;
+                cmd.CommandText = sql;
+                MySqlParameter p1 = new MySqlParameter("@Url", url);
+                cmd.Parameters.Add(p1);
+                MySqlParameter p2 = new MySqlParameter("@Date", DateTime.Now);
+                cmd.Parameters.Add(p2);
+                int rowCount = cmd.ExecuteNonQuery();
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+        }
+
+        public static List<Historique> GetScanList()
+        {
+            List<Historique> historique = new List<Historique>();
+            string sql = "SELECT * FROM ScanList ORDER BY Date DESC LIMIT 100 ";
+            MySqlConnection conn = DBUtils.GetDBConnection();
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand();
+            try
+            {
+                cmd.Connection = conn;
+                cmd.CommandText = sql;
+                using (var reader = cmd.ExecuteReader())
+                {
+
+                    while (reader.Read())
+                        historique.Add(new Historique
+                        {
+                            Id = reader.GetInt32(0),
+                            Url = reader.GetString(1),
+                            Date = reader.GetDateTime(2),
+                        });
+                }
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error: " + e);
+                Console.WriteLine(e.StackTrace);
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+
+            return historique;
         }
 
     }

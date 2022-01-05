@@ -162,9 +162,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="App_Code\Config.cs" />
+    <Compile Include="App_Code\Expansive.cs" />
     <Compile Include="Commands\CommandView.cs" />
+    <Compile Include="Controls\RichTextViewer.cs" />
     <Compile Include="Database\DBMySQLUtils.cs" />
     <Compile Include="Database\DBUtils.cs" />
+    <Compile Include="Models\Historique.cs" />
     <Compile Include="Models\Post.cs" />
     <Compile Include="Models\Options.cs" />
     <Compile Include="Services\ApplicationInfo.cs" />
@@ -173,7 +177,11 @@
     <Compile Include="Services\KeyConvertor.cs" />
     <Compile Include="Services\WebDriver.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\HistoriqueViewModel.cs" />
     <Compile Include="ViewModels\OptionsViewModel.cs" />
+    <Compile Include="Views\Historique.xaml.cs">
+      <DependentUpon>Historique.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\OptionView.xaml.cs">
       <DependentUpon>OptionView.xaml</DependentUpon>
     </Compile>
@@ -194,6 +202,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\Historique.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\OptionView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
