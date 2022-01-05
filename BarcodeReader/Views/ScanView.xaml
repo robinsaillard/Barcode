@@ -47,26 +47,16 @@
                     <RowDefinition Height="*" />
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <Button Grid.Row="0" Content="Démarrer" x:Name="BtnStart" Command="{Binding DriverStatut}" IsEnabled="{Binding StartBtn}" CommandParameter="true" VerticalAlignment="Center" Margin="15,0,15,0"/>
-                <Button Grid.Row="1" Content="Stop" x:Name="BtnStop"  Command="{Binding DriverStatut}" IsEnabled="{Binding StopBtn}" CommandParameter="true" VerticalAlignment="Center" Margin="15,0,15,0"/>
+                <Button Grid.Row="0" Content="{Binding StartBtnContent}" x:Name="BtnStart" Command="{Binding DriverStatut}" IsEnabled="{Binding StartBtn}" CommandParameter="start" VerticalAlignment="Center" Margin="15,0,15,0"/>
+                <Button Grid.Row="1" Content="{Binding StopBtnContent}" x:Name="BtnStop"  Command="{Binding DriverStatut}" IsEnabled="{Binding StopBtn}" CommandParameter="stop" VerticalAlignment="Center" Margin="15,0,15,0"/>
             </Grid>
         </Grid>
         <Grid Grid.Row="1">
             <materialDesign:Card>
                 <ScrollViewer x:Name="Scrollviewer"
-                          DockPanel.Dock="Bottom">
-                    <!--RichTextBox Name="Rtb"
-                             AcceptsReturn="True"
-                             IsReadOnly="True"
-                             >
-                    </RichTextBox-->
-                    <Controls:RichTextViewer RichText="{Binding RtbContent}">
-                        <FlowDocument>
-                            <Paragraph>
-                                <Run Text="RichTextViewer"/>
-                            </Paragraph>
-                        </FlowDocument>
-                    </Controls:RichTextViewer>
+                          DockPanel.Dock="Bottom"
+                          Controls:Helper.AutoScroll="{Binding AutoSroll}"  >
+                    <Controls:RichTextViewer RichText="{Binding RtbContent}"/>
                 </ScrollViewer>
             </materialDesign:Card>
         </Grid>
