@@ -1,5 +1,6 @@
 ﻿
 using BarcodeReader.Commands;
+using BarcodeReader.Models;
 using BarcodeReader.Services;
 using BarcodeReader.Views;
 using Djlastnight.Hid;
@@ -19,8 +20,11 @@ namespace BarcodeReader.ViewModels
         public CommandView<string> DriverStatut { get; private set; }
         public Window CurrentWindow { get; set; }
         public IIinputDevice Device { get; private set; }
-        private HidDataReader reader;
+        public HidDataReader Reader { get; private set; }
         private readonly KeyConvertor keyConvertor = new KeyConvertor();
+        public Dictionary<string, Options> Options { get; set; }
+        public WebDriver Driver { get; private set; }
+        public string PostName { get; set; }
         private int i = 0;
         private string log = "";
         private readonly string green = "#32CD32";
@@ -34,45 +38,96 @@ namespace BarcodeReader.ViewModels
             Device = null;
             CurrentWindow = Application.Current.MainWindow;
             StatutColor = red;
+            StatutText = "OFF";
+            AutoSroll = true;
+            StartBtnContent = "Démarrer";
+            StopBtnContent = "Stop";
+            PostName = Environment.MachineName.ToString();
+            if (!DbManager.PostNameExist(PostName))
+            {
+                DbManager.InsertPost(PostName);
+            }
+            Options = DbManager.GetOptions(PostName);
         }
 
 
         private void OnDriverStatut(string obj)
         {
             UpdateStatutScanCode();
-
-            if (StartBtn)
+            switch (obj)
             {
-                StopBtn = true;
-                StartBtn = false;
-                reader = new HidDataReader(CurrentWindow);
-                reader.HidDataReceived += OnHidDataReceived;
-            }
-            else
-            {
-                StartBtn = true;
-                StopBtn = false;
-                DeviceId = "";
-                StatutColor = red;
-                StatutText = "OFF";
+                case "start":
+                    OnStartAction();
+                    break;
+                case "stop":
+                    OnStopAction();
+                    break;
+                default:
+                    break;
             }
         }
 
-        
+        private void OnStartAction()
+        {
+            if (StartBtn && Device != null)
+            {
+                StopBtn = true;
+                StartBtn = false;
+                StartDriver();
+                StartDirectoryWatcher();
+                Reader = new HidDataReader(CurrentWindow);
+                Reader.HidDataReceived += OnHidDataReceived;
+
+                Run run = new Run(string.Format(
+                   "================ Démarrage {0} ================", ApplicationInfo.AppNameVersion
+                ))
+                {
+                    Foreground = Brushes.White,
+                    Background = GetColor("#2196f3")
+                };
+                RtbContent = run;
+            }else
+            {
+                Run run = new Run("Erreur : Verifiez les branchements USB de la zapette/douchette")
+                {
+                    Foreground = Brushes.Red,
+                    Background = Brushes.Black
+                };
+                RtbContent = run;
+                StartBtnContent = "Réessayez";
+            }
+        }
+        private void OnStopAction()
+        {
+            if (StopBtn && Device != null)
+            {
+                Run run = new Run(string.Format(
+                "================     Stop  {0}      ================", ApplicationInfo.AppNameVersion
+                ))
+                {
+                    Foreground = Brushes.White,
+                    Background = GetColor("#2196f3")
+                };
+                RtbContent = run;
+            }
+            if(Driver != null)
+            {
+                Driver.CloseGhostsChromeDriver();
+            }
+            StartBtn = true;
+            StopBtn = false;
+            DeviceId = "";
+            StatutColor = red;
+            StatutText = "OFF";
+        }
 
         private void OnHidDataReceived(object sender, HidEvent e)
         {
             try
             {
-                if (StartBtn)
-                {
-                    return;
-                }
+                if (StartBtn) { return;}
+                if (e.Device == null) { return; }
 
-                if (e.Device == null)
-                {
-                    return;
-                }
                 var senderVid = e.Device.VendorId.ToString("X4");
                 var senderPid = e.Device.ProductId.ToString("X4");
                 if (Device.Vendor != senderVid || Device.Product != senderPid)
@@ -99,8 +154,8 @@ namespace BarcodeReader.ViewModels
                     if (e.RawInput.keyboard.VKey == 13)
                     {
                         var web = "http://";
-                       // AddHyperlinkText(web + this.log, this.log, "", "");
-                      //  driver.OpenLink(web + this.log);
+                        AddHyperlinkText(web + this.log, this.log, "", "");
+                        Driver.OpenLink(web + this.log);
                         DbManager.InsertScanList(this.log);
                         this.log = "";
 
@@ -109,7 +164,12 @@ namespace BarcodeReader.ViewModels
             }
             catch (Exception ex)
             {
-               // Rtb.Document.Blocks.Add(new Paragraph(new Run("Error: " + ex.Message) { Foreground = Brushes.Red, Background = Brushes.Black }));
+                Run run = new Run("Error: " + ex.Message)
+                {
+                    Foreground = Brushes.Red,
+                    Background = Brushes.Black
+                };
+                RtbContent = run;
             }
         }
 
@@ -155,21 +215,77 @@ namespace BarcodeReader.ViewModels
                     RtbContent = "Test";
                 }
             }
+        }
 
-          /*  if (Device == null)
+        private void AddHyperlinkText(string linkURL, string linkName, string TextBeforeLink, string TextAfterLink)
+        {
+            Paragraph para = new Paragraph
             {
-                var color_red = (Brush)converter.ConvertFromString(red);
-                StatutScanner.Background = color_red;
-                StatutScanner.Content = "Off";
-                BtnStart.IsEnabled = true;
-                DeviceId.Text = null;
-                BtnStop.IsEnabled = false;
-                BtnStart.Content = "Réessayez";
-            }*/
+                Margin = new Thickness(0)
+            };
+
+            Hyperlink link = new Hyperlink
+            {
+                IsEnabled = true
+            };
+            link.Inlines.Add(linkName);
+            link.NavigateUri = new Uri(linkURL);
+            link.RequestNavigate += (sender, args) => Driver.OpenLink(args.Uri.ToString());
+
+            para.Inlines.Add(new Run("[" + DateTime.Now.ToLongTimeString() + "]: "));
+            para.Inlines.Add(TextBeforeLink);
+            para.Inlines.Add(link);
+            para.Inlines.Add(new Run(TextAfterLink));
+            RtbContent = para;
+        }
+
+        private void StartDirectoryWatcher()
+        {
+            try
+            {
+                string values = Options["PDF_FILENAME"].Value;
+                string directory = Options["DOWNLOAD_DIRECTORY"].Value;
+                string ext = Options["PDF_EXTENSION"].Value;
+                string printer = Options["PRINTER_NAME"].Value;
+                string[] listFile = values.Split(';');
+                _ = new DirectoryWatcher(directory, listFile, ext, printer);
+            }
+            catch (Exception ex)
+            {
+                Run run = new Run("Error: " + ex.Message)
+                {
+                    Foreground = Brushes.Red,
+                    Background = Brushes.Black
+                };
+                RtbContent = run;
+            }
 
         }
 
+        private void StartDriver()
+        {
+            try
+            {
+                string directory = Options["DOWNLOAD_DIRECTORY"].Value;
+                Driver = new WebDriver(directory);
+                string version = Driver.GetChromeVersion();
+            }
+            catch (Exception ex)
+            {
+                Run run = new Run("Error: " + ex.Message)
+                {
+                    Foreground = Brushes.Red,
+                    Background = Brushes.Black
+                };
+                RtbContent = run;
+            }
+        }
 
+        private Brush GetColor(string color)
+        {
+            var converter = new BrushConverter();
+            return (Brush)converter.ConvertFromString(color);
+        }
 
         private bool _startBtn;
         public bool StartBtn
@@ -206,11 +322,32 @@ namespace BarcodeReader.ViewModels
             set => SetProperty(ref _statutText, value);
         }
 
-        private string _rtbContent;
-        public string RtbContent
+        private object _rtbContent;
+        public object RtbContent
         {
             get => _rtbContent;
             set => SetProperty(ref _rtbContent, value);
+        }
+
+        private bool _autoSroll;
+        public bool AutoSroll 
+        { 
+            get => _autoSroll; 
+            set => SetProperty(ref _autoSroll, value); 
+        }
+
+        private string _startBtnContent;
+        public string StartBtnContent
+        {
+            get => _startBtnContent;
+            set => SetProperty(ref _startBtnContent, value);
+        }
+
+        private string _stopBtnContent;
+        public string StopBtnContent
+        {
+            get => _stopBtnContent;
+            set => SetProperty(ref _stopBtnContent, value);
         }
     }   
 }
