@@ -47,6 +47,18 @@ namespace BarcodeReader.Services
             return list;
         }
 
+        public static void UpdateOptions(string postName, Options option)
+        {
+            MySqlConnection conn = DBUtils.GetDBConnection();
+            conn.Open();
+            string sql = "UPDATE Options AS o INNER JOIN Posts AS p ON (o.Post = p.Id) SET o.Value = '" + option.Value + "' WHERE p.Name = '" + postName + "' AND o.Variable ='" + option.Variable + "'";
+            MySqlCommand cmd = new MySqlCommand();
+            cmd.Connection = conn;
+            cmd.CommandText = sql;
+
+            int rowCount = cmd.ExecuteNonQuery();
+        }
+
         public static bool PostNameExist(string postName)
         {
             string sql = "SELECT Name FROM Posts WHERE Name = '" + postName + "'";
@@ -110,7 +122,7 @@ namespace BarcodeReader.Services
                     };
                     int rowCount = cmdOptions.ExecuteNonQuery();
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
 
                     throw;
@@ -134,7 +146,7 @@ namespace BarcodeReader.Services
                 cmd.Parameters.Add(p2);
                 int rowCount = cmd.ExecuteNonQuery();
             }
-            catch (Exception e)
+            catch (Exception )
             {
 
                 throw;

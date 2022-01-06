@@ -176,6 +176,7 @@
     <Compile Include="Services\DbManager.cs" />
     <Compile Include="Services\DirectoryWatcher.cs" />
     <Compile Include="Services\KeyConvertor.cs" />
+    <Compile Include="Services\KnownFolders.cs" />
     <Compile Include="Services\WebDriver.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\HistoriqueViewModel.cs" />
