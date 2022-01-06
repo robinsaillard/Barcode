@@ -4,6 +4,8 @@ using BarcodeReader.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
+using System.Windows.Input;
 
 namespace BarcodeReader.ViewModels
 {
@@ -11,8 +13,6 @@ namespace BarcodeReader.ViewModels
     {
         public CommandView<string> SaveOption { get; private set; }
         public List<Options> Options { get; private set; }
-
-        public List<Options> OptionInDataBase { get;}
 
         
         public OptionsViewModel()
@@ -26,40 +26,34 @@ namespace BarcodeReader.ViewModels
                 DbManager.InsertPost(postName);
             }
 
-            OptionInDataBase = DbManager.GetOptions(postName).Values.ToList();
             Options = DbManager.GetOptions(postName).Values.ToList();
             DataGridContent = Options;
         }
 
+        public void RaiseCanExecuteChanged()
+        {
+            CommandManager.InvalidateRequerySuggested();
+        }
+
         private void OnSaveOption(string obj)
         {
-            var un = Options;
-            var deux = DataGridContent;
-
-            var diffArray = OptionInDataBase.SequenceEqual(DataGridContent);
             string postName = Environment.MachineName.ToString();
-
-            if (diffArray == false)
+            Options = DbManager.GetOptions(postName).Values.ToList();
+            int res = 0; 
+            for (int i = 0; i < Options.Count; i++)
             {
-
-                for (int i = 0; i < Options.Count; i++)
+                if (Options[i].Value != DataGridContent[i].Value)
                 {
-
-                    if (Options[i].Value != OptionInDataBase[i].Value)
-                    {
-                        
-                        DbManager.UpdateOptions(postName, Options[i]);
-                    }
+                    res += DbManager.UpdateOptions(postName, DataGridContent[i]);
                 }
-
-                
             }
-
-            
+            if (res > 0)
+            {
+               MessageBox.Show($"{res} variable(s) mise(s) à jour", "Base de données"); 
+            }
         }
 
         private List<Options> _dataGridContent;
-
         public List<Options> DataGridContent
         {
             get => _dataGridContent;

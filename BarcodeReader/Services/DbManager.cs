@@ -47,7 +47,7 @@ namespace BarcodeReader.Services
             return list;
         }
 
-        public static void UpdateOptions(string postName, Options option)
+        public static int UpdateOptions(string postName, Options option)
         {
             MySqlConnection conn = DBUtils.GetDBConnection();
             conn.Open();
@@ -55,8 +55,8 @@ namespace BarcodeReader.Services
             MySqlCommand cmd = new MySqlCommand();
             cmd.Connection = conn;
             cmd.CommandText = sql;
-
             int rowCount = cmd.ExecuteNonQuery();
+            return rowCount;
         }
 
         public static bool PostNameExist(string postName)
