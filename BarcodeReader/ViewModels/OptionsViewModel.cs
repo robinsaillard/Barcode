@@ -29,12 +29,7 @@ namespace BarcodeReader.ViewModels
             Options = DbManager.GetOptions(postName).Values.ToList();
             DataGridContent = Options;
         }
-
-        public void RaiseCanExecuteChanged()
-        {
-            CommandManager.InvalidateRequerySuggested();
-        }
-
+    
         private void OnSaveOption(string obj)
         {
             string postName = Environment.MachineName.ToString();
