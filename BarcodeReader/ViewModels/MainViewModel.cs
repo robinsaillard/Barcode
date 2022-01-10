@@ -1,8 +1,6 @@
 ﻿using BarcodeReader.Commands;
 using BarcodeReader.Services;
-using System.Drawing;
-using System.Reflection;
-using System.Windows.Media;
+
 
 namespace BarcodeReader.ViewModels
 {

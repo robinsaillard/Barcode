@@ -22,10 +22,12 @@ namespace BarcodeReader.Views
         private void CheckUpdate()
         {
             Version localVersion = ApplicationInfo.CurrentVersion;
-            ProcessStartInfo updater = new ProcessStartInfo("AutoUpdater.exe");
-            updater.WindowStyle = ProcessWindowStyle.Normal;
-            updater.Arguments = "name=" + ApplicationInfo.AppName + " version=" + localVersion;
-            Process.Start(updater);
+            ProcessStartInfo processStartInfo = new ProcessStartInfo("AutoUpdater.exe")
+            {
+                WindowStyle = ProcessWindowStyle.Normal,
+                Arguments = "name=" + ApplicationInfo.AppName + " version=" + localVersion
+            };
+            _ = Process.Start(processStartInfo);
         }
     }
 }
