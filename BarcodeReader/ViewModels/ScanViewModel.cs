@@ -2,14 +2,12 @@
 using BarcodeReader.Commands;
 using BarcodeReader.Models;
 using BarcodeReader.Services;
-using BarcodeReader.Views;
 using Djlastnight.Hid;
 using Djlastnight.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 
@@ -99,7 +97,7 @@ namespace BarcodeReader.ViewModels
         }
         private void OnStopAction()
         {
-            if (StopBtn && Device != null)
+            if (!(!StopBtn || Device == null))
             {
                 Run run = new Run(string.Format(
                 "================     Stop  {0}      ================", ApplicationInfo.AppNameVersion
@@ -152,10 +150,10 @@ namespace BarcodeReader.ViewModels
                     this.log += dict[e.RawInput.keyboard.MakeCode][i];
                     i = 0;
                     if (e.RawInput.keyboard.VKey == 13)
-                    {
-                        var web = "http://";
-                        AddHyperlinkText(web + this.log, this.log, "", "");
-                        Driver.OpenLink(web + this.log);
+                    { 
+                        Uri link = new Uri(this.log);
+                        AddHyperlinkText(link, this.log, "", "");                    
+                        Driver.OpenLink(link);
                         DbManager.InsertScanList(this.log);
                         this.log = "";
 
@@ -212,12 +210,11 @@ namespace BarcodeReader.ViewModels
                     DeviceId = device.DeviceID;
                     StatutText = "ON";
                     StatutColor = green;
-                    RtbContent = "Test";
                 }
             }
         }
 
-        private void AddHyperlinkText(string linkURL, string linkName, string TextBeforeLink, string TextAfterLink)
+        private void AddHyperlinkText(Uri linkURL, string linkName, string TextBeforeLink, string TextAfterLink)
         {
             Paragraph para = new Paragraph
             {
@@ -229,8 +226,8 @@ namespace BarcodeReader.ViewModels
                 IsEnabled = true
             };
             link.Inlines.Add(linkName);
-            link.NavigateUri = new Uri(linkURL);
-            link.RequestNavigate += (sender, args) => Driver.OpenLink(args.Uri.ToString());
+            link.NavigateUri = linkURL;
+            link.RequestNavigate += (sender, args) => Driver.OpenLink(args.Uri);
 
             para.Inlines.Add(new Run("[" + DateTime.Now.ToLongTimeString() + "]: "));
             para.Inlines.Add(TextBeforeLink);

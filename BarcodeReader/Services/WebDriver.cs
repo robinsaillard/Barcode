@@ -148,7 +148,7 @@ namespace BarcodeReader.Services
         }
 
 
-        public void OpenLink(string url)
+        public void OpenLink(Uri url)
         {
             try
             {
@@ -165,8 +165,10 @@ namespace BarcodeReader.Services
         {
             this.chromeOptions = new ChromeOptions();
 
-            List<string> ls = new List<string>();
-            ls.Add("enable-logging");
+            List<string> ls = new List<string>
+            {
+                "enable-logging"
+            };
             this.chromeOptions.AddExcludedArguments(ls);
             this.chromeOptions.AddArgument("--ignore-certificate-errors");
             this.chromeOptions.AddArgument("--disable-popup-blocking");
