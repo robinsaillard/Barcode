@@ -150,8 +150,16 @@ namespace BarcodeReader.ViewModels
                     this.log += dict[e.RawInput.keyboard.MakeCode][i];
                     i = 0;
                     if (e.RawInput.keyboard.VKey == 13)
-                    { 
-                        Uri link = new Uri(this.log);
+                    {
+                        Uri link;
+                        if (this.log.Contains("http"))
+                        {
+                            link = new Uri(this.log);
+                        }else
+                        {
+                            link = new Uri("http://" + this.log);
+                        }
+                        
                         AddHyperlinkText(link, this.log, "", "");                    
                         Driver.OpenLink(link);
                         DbManager.InsertScanList(this.log);

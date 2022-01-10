@@ -128,9 +128,9 @@ namespace BarcodeReader.Services
                 {
                     this.driver.Close();
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    throw;
+                    MessageBox.Show("Erreur :" + ex.Message);
                 }
             }
            
