@@ -16,18 +16,6 @@ namespace BarcodeReader.Views
         public MainWindow()
         {
             InitializeComponent();
-            CheckUpdate();
-        }
-
-        private void CheckUpdate()
-        {
-            Version localVersion = ApplicationInfo.CurrentVersion;
-            ProcessStartInfo processStartInfo = new ProcessStartInfo("AutoUpdater.exe")
-            {
-                WindowStyle = ProcessWindowStyle.Normal,
-                Arguments = "name=" + ApplicationInfo.AppName + " version=" + localVersion
-            };
-            _ = Process.Start(processStartInfo);
         }
     }
 }

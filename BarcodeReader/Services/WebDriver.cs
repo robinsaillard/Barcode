@@ -148,7 +148,7 @@ namespace BarcodeReader.Services
         }
 
 
-        public void OpenLink(Uri url)
+        public void OpenLink(string url)
         {
             try
             {
@@ -156,8 +156,9 @@ namespace BarcodeReader.Services
             }
             catch (Exception)
             {
-                GetDriver();
-                this.driver.Navigate().GoToUrl(url);
+                if(this.driver == null) GetDriver();
+                MessageBox.Show(url);
+               
             }         
         }
 
@@ -182,7 +183,7 @@ namespace BarcodeReader.Services
             this.chromeOptions.AddUserProfilePreference("download.open_pdf_in_system_reader", false);
             this.chromeOptions.AddUserProfilePreference("plugins.always_open_pdf_externally", true);
 
-            this.chromeOptions.AddExtension(@"./extension.crx");
+            this.chromeOptions.AddExtension(@"./Ressources/extension.crx");
         }
     }
 }

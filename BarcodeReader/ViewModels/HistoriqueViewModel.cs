@@ -19,8 +19,7 @@ namespace BarcodeReader.ViewModels
 
         private bool Filter(object obj)
         {
-            var data = obj as Historique;
-            if (data != null)
+            if (obj is Historique data)
             {
                 if (!string.IsNullOrEmpty(_filterString))
                 {
@@ -31,7 +30,7 @@ namespace BarcodeReader.ViewModels
                     DateTime date = DateTime.Parse(_dateFilterString);
                     return data.Date.Equals(date);
                 }
-               return true;
+                return true;
             }
             return false;
         }

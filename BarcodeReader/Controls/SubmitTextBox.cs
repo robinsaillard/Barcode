@@ -15,7 +15,6 @@ namespace BarcodeReader.Controls
 
         void SubmitTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            var text = e; 
             if (e.Key == Key.Enter)
             {
                 BindingExpression be = GetBindingExpression(TextBox.TextProperty);

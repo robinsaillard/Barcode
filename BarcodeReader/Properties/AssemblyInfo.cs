@@ -10,7 +10,7 @@ using System.Windows;
 [assembly: AssemblyTitle("BarcodeReader")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Agence Colibri")]
 [assembly: AssemblyProduct("BarcodeReader")]
 [assembly: AssemblyCopyright("Copyright ©  2021")]
 [assembly: AssemblyTrademark("")]
@@ -53,3 +53,4 @@ using System.Windows;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("2.1.0")]
 [assembly: AssemblyFileVersion("2.1.0")]
+[assembly: NeutralResourcesLanguage("fr")]

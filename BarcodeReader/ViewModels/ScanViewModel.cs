@@ -107,6 +107,7 @@ namespace BarcodeReader.ViewModels
                     Background = GetColor("#2196f3")
                 };
                 RtbContent = run;
+                Reader.Dispose();
             }
             if(Driver != null)
             {
@@ -151,15 +152,16 @@ namespace BarcodeReader.ViewModels
                     i = 0;
                     if (e.RawInput.keyboard.VKey == 13)
                     {
-                        Uri link;
-                        if (this.log.Contains("http"))
+                        string http = "http://";
+                        string link = "";
+                        link = this.log;
+                        if (!this.log.Contains(http))
                         {
-                            link = new Uri(this.log);
-                        }else
-                        {
-                            link = new Uri("http://" + this.log);
+                            link = http + this.log;
                         }
-                        
+
+                        link = link.TrimEnd();
+
                         AddHyperlinkText(link, this.log, "", "");                    
                         Driver.OpenLink(link);
                         DbManager.InsertScanList(this.log);
@@ -176,7 +178,12 @@ namespace BarcodeReader.ViewModels
                     Background = Brushes.Black
                 };
                 RtbContent = run;
+                this.log = "";
             }
+        }
+        private bool IsValidUrl(string address)
+        {
+            return Uri.IsWellFormedUriString(address, UriKind.RelativeOrAbsolute);
         }
 
         private void UpdateStatutScanCode()
@@ -222,7 +229,7 @@ namespace BarcodeReader.ViewModels
             }
         }
 
-        private void AddHyperlinkText(Uri linkURL, string linkName, string TextBeforeLink, string TextAfterLink)
+        private void AddHyperlinkText(string linkURL, string linkName, string TextBeforeLink, string TextAfterLink)
         {
             Paragraph para = new Paragraph
             {
@@ -234,8 +241,8 @@ namespace BarcodeReader.ViewModels
                 IsEnabled = true
             };
             link.Inlines.Add(linkName);
-            link.NavigateUri = linkURL;
-            link.RequestNavigate += (sender, args) => Driver.OpenLink(args.Uri);
+            link.NavigateUri = new Uri(linkURL);
+            link.RequestNavigate += (sender, args) => Driver.OpenLink(args.Uri.ToString());
 
             para.Inlines.Add(new Run("[" + DateTime.Now.ToLongTimeString() + "]: "));
             para.Inlines.Add(TextBeforeLink);

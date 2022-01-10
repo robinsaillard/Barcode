@@ -5,27 +5,34 @@ VisualStudioVersion = 16.0.31911.196
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BarcodeReader", "BarcodeReader\BarcodeReader.csproj", "{A42B5D3B-64EC-4DB1-8670-67ABD81F859F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoUpdater", "AutoUpdater\AutoUpdater.csproj", "{9EE5E05C-E9A2-42C7-AD70-4FB0E039844D}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		2.0.0|Any CPU = 2.0.0|Any CPU
+		2.0.0|x64 = 2.0.0|x64
+		2.1.0|Any CPU = 2.1.0|Any CPU
+		2.1.0|x64 = 2.1.0|x64
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
 		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{A42B5D3B-64EC-4DB1-8670-67ABD81F859F}.2.0.0|Any CPU.ActiveCfg = 2.0.0|Any CPU
 		{A42B5D3B-64EC-4DB1-8670-67ABD81F859F}.2.0.0|Any CPU.Build.0 = 2.0.0|Any CPU
+		{A42B5D3B-64EC-4DB1-8670-67ABD81F859F}.2.0.0|x64.ActiveCfg = 2.0.0|x64
+		{A42B5D3B-64EC-4DB1-8670-67ABD81F859F}.2.0.0|x64.Build.0 = 2.0.0|x64
+		{A42B5D3B-64EC-4DB1-8670-67ABD81F859F}.2.1.0|Any CPU.ActiveCfg = Debug|Any CPU
+		{A42B5D3B-64EC-4DB1-8670-67ABD81F859F}.2.1.0|Any CPU.Build.0 = Debug|Any CPU
+		{A42B5D3B-64EC-4DB1-8670-67ABD81F859F}.2.1.0|x64.ActiveCfg = Debug|Any CPU
+		{A42B5D3B-64EC-4DB1-8670-67ABD81F859F}.2.1.0|x64.Build.0 = Debug|Any CPU
 		{A42B5D3B-64EC-4DB1-8670-67ABD81F859F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A42B5D3B-64EC-4DB1-8670-67ABD81F859F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A42B5D3B-64EC-4DB1-8670-67ABD81F859F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A42B5D3B-64EC-4DB1-8670-67ABD81F859F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9EE5E05C-E9A2-42C7-AD70-4FB0E039844D}.2.0.0|Any CPU.ActiveCfg = Debug|Any CPU
-		{9EE5E05C-E9A2-42C7-AD70-4FB0E039844D}.2.0.0|Any CPU.Build.0 = Debug|Any CPU
-		{9EE5E05C-E9A2-42C7-AD70-4FB0E039844D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9EE5E05C-E9A2-42C7-AD70-4FB0E039844D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9EE5E05C-E9A2-42C7-AD70-4FB0E039844D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9EE5E05C-E9A2-42C7-AD70-4FB0E039844D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A42B5D3B-64EC-4DB1-8670-67ABD81F859F}.Debug|x64.ActiveCfg = Debug|x64
+		{A42B5D3B-64EC-4DB1-8670-67ABD81F859F}.Debug|x64.Build.0 = Debug|x64
+		{A42B5D3B-64EC-4DB1-8670-67ABD81F859F}.Release|Any CPU.ActiveCfg = 2.1.0|Any CPU
+		{A42B5D3B-64EC-4DB1-8670-67ABD81F859F}.Release|Any CPU.Build.0 = 2.1.0|Any CPU
+		{A42B5D3B-64EC-4DB1-8670-67ABD81F859F}.Release|x64.ActiveCfg = 2.1.0|x64
+		{A42B5D3B-64EC-4DB1-8670-67ABD81F859F}.Release|x64.Build.0 = 2.1.0|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
