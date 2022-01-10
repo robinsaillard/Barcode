@@ -167,6 +167,7 @@
     <Compile Include="Commands\CommandView.cs" />
     <Compile Include="Controls\Helper.cs" />
     <Compile Include="Controls\RichTextViewer.cs" />
+    <Compile Include="Controls\SubmitTextBox.cs" />
     <Compile Include="Database\DBMySQLUtils.cs" />
     <Compile Include="Database\DBUtils.cs" />
     <Compile Include="Models\Historique.cs" />

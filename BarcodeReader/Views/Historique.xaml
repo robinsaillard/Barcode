@@ -3,14 +3,42 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:BarcodeReader.Views"
+             xmlns:Controls="clr-namespace:BarcodeReader.Controls"
+             xmlns:local="clr-namespace:BarcodeReader.Views" 
+             xmlns:viewmodels="clr-namespace:BarcodeReader.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:HistoriqueViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid Background="White">
         <DataGrid Name="DataGridHistoriqueView" AutoGenerateColumns="False">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Url" Binding="{Binding Url}" />
-                <DataGridTextColumn Header="Date" Binding="{Binding Date}" />
+                <DataGridTextColumn Binding="{Binding Url}">
+                    <DataGridTextColumn.Header>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Margin="0,0,20,0" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Url"/>
+                            <TextBlock Grid.Column="1" >
+                                <Controls:SubmitTextBox Width="200px" Text="{Binding Path=TextUrlContent, UpdateSourceTrigger=Explicit}" />
+                            </TextBlock>
+                        </Grid>
+                    </DataGridTextColumn.Header>
+                </DataGridTextColumn>
+                <DataGridTextColumn Binding="{Binding Date}">
+                    <DataGridTextColumn.Header>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Margin="0,0,20,0" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Date"/>
+                            <TextBlock Grid.Column="1" >
+                                <DatePicker Width="200px"></DatePicker>
+                            </TextBlock>
+                        </Grid>
+                    </DataGridTextColumn.Header>
+                </DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
 
