@@ -51,10 +51,16 @@ namespace BarcodeReader.Services
         {
             MySqlConnection conn = DBUtils.GetDBConnection();
             conn.Open();
-            string sql = "UPDATE Options AS o INNER JOIN Posts AS p ON (o.Post = p.Id) SET o.Value = '" + option.Value.Replace("\\", "\\\\") + "' WHERE p.Name = '" + postName + "' AND o.Variable ='" + option.Variable + "'";
+            string sql = "UPDATE Options AS o INNER JOIN Posts AS p ON (o.Post = p.Id) SET o.Value = @Value WHERE p.Name = @Postname AND o.Variable = @Variable ";
             MySqlCommand cmd = new MySqlCommand();
             cmd.Connection = conn;
             cmd.CommandText = sql;
+            MySqlParameter value = new MySqlParameter("@Value", option.Value);
+            cmd.Parameters.Add(value);
+            MySqlParameter post = new MySqlParameter("@Postname", postName);
+            cmd.Parameters.Add(post);
+            MySqlParameter variable = new MySqlParameter("@Variable", option.Variable);
+            cmd.Parameters.Add(variable);
             int rowCount = cmd.ExecuteNonQuery();
             return rowCount;
         }
