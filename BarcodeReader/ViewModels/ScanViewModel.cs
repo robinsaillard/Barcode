@@ -153,12 +153,18 @@ namespace BarcodeReader.ViewModels
                     if (e.RawInput.keyboard.VKey == 13)
                     {
                         string http = "http://";
+                        string https = "https://";
                         string link = "";
                         link = this.log;
-                        if (!this.log.Contains(http))
+                        if (this.log.Contains(https))
+                        {
+                            link = this.log.Replace(https,http);
+                        }
+                        else if (!this.log.Contains(http))
                         {
                             link = http + this.log;
                         }
+                        
 
                         link = link.TrimEnd();
 
