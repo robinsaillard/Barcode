@@ -117,7 +117,7 @@ namespace BarcodeReader.Services
                     string downloadsPath = KnownFolders.GetPath(KnownFolder.Downloads);
                     string sqlOptions = "INSERT INTO Options (Post, Variable, Value) VALUES " +
                         $"({id}, 'PDF_FILENAME', 'colissimo;prepa')," +
-                        $"({id}, 'DOWNLOAD_DIRECTORY', {downloadsPath} )," +
+                        $"({id}, 'DOWNLOAD_DIRECTORY', '{downloadsPath.Replace("\\","\\\\")}')," +
                         $"({id}, 'PRINTER_NAME', 'Adobe PDF')," +
                         $"({id}, 'PDF_EXTENSION', 'pdf')";
 

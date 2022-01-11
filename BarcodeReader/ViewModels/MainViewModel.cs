@@ -17,9 +17,9 @@ namespace BarcodeReader.ViewModels
 
         private readonly ScanViewModel scanViewModel = new ScanViewModel();
 
-        private readonly OptionsViewModel optionsViewModel = new OptionsViewModel();
+       // private readonly OptionsViewModel optionsViewModel = new OptionsViewModel();
 
-        private readonly HistoriqueViewModel historiqueViewModel = new HistoriqueViewModel();
+       // private readonly HistoriqueViewModel historiqueViewModel = new HistoriqueViewModel();
 
         private ViewModelBase _CurrentViewModel;
 
@@ -37,12 +37,14 @@ namespace BarcodeReader.ViewModels
             switch (destination)
             {
                 case "options":
+                    OptionsViewModel optionsViewModel = new OptionsViewModel();
                     CurrentViewModel = optionsViewModel;
                     break;
                 case "scan":
                     CurrentViewModel = scanViewModel;
                     break;
                 case "historique":
+                    HistoriqueViewModel historiqueViewModel = new HistoriqueViewModel();
                     CurrentViewModel = historiqueViewModel;
                     break;
                 default:
