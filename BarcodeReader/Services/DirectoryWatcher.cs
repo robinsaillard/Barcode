@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
+using System.Printing;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -47,6 +48,7 @@ namespace BarcodeReader.Services
 
         private void OnChanged(object sender, FileSystemEventArgs e)
         {
+            
             ListFileName = ListFileName ?? new string[] { "*" };
             foreach (string filename in ListFileName)
             {
@@ -58,16 +60,47 @@ namespace BarcodeReader.Services
                     {
                         try
                         {
-                            PdfDocument printer = new PdfDocument();
-                            printer.LoadFromFile(PathFilePrint);
-                            printer.PrintSettings.PrinterName = PrinterName;
-                            printer.Print();
-                            File.Delete(PathFilePrint);
+                            //PdfDocument printer = new PdfDocument();
+                            //printer.LoadFromFile(PathFilePrint);
+                            //printer.PrintSettings.PrinterName = PrinterName;
+                            //printer.Print();
+                            //File.Delete(PathFilePrint);
+
+
+                            IPrinter printer = new Printer();
+                            printer.PrintRawFile(PrinterName, PathFilePrint, filename);
+                            
+                            //System.Threading.Thread.Sleep(1000);
+                            //File.Delete(PathFilePrint);
+
+                            var myPrintServer = new LocalPrintServer();
+                            var pq = myPrintServer.GetPrintQueue(PrinterName);
+
+                            var jobs = pq.GetPrintJobInfoCollection();
+
+                            foreach (var job in jobs)
+                            {
+                                var done = false;
+                                while (!done)
+                                {
+                                    pq.Refresh();
+                                    job.Refresh();
+                                    done =  job.IsDeleted ;
+                                }
+                                if (done)
+                                {
+                                    File.Delete(PathFilePrint);
+                                }
+                            }
+
+                            
+
                         }
                         catch (Exception ex)
                         {
                             MessageBox.Show(ex.Message);
                         }
+
 
                     }
                 }
