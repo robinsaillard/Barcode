@@ -1,8 +1,13 @@
-﻿using RawPrint;
+﻿using OpenQA.Selenium;
+using RawPrint;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
+using System.Net;
 using System.Printing;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows;
 
 namespace BarcodeReader.Services
@@ -41,9 +46,15 @@ namespace BarcodeReader.Services
             watcher.EnableRaisingEvents = true;
         }
 
+
+
         private void OnChanged(object sender, FileSystemEventArgs e)
         {
-            
+
+
+           
+
+
             ListFileName = ListFileName ?? new string[] { "*" };
             foreach (string filename in ListFileName)
             {
@@ -55,8 +66,16 @@ namespace BarcodeReader.Services
             }
             if (File.Exists(PathFilePrint))
             {
+
+
                 try
                 {
+
+                    FileInfo fInfo = new FileInfo(e.FullPath);
+                    while (IsFileLocked(fInfo))
+                    {
+                        Thread.Sleep(500);
+                    }
                     DocumentName = Path.GetFileName(PathFilePrint);
                     IPrinter printer = new Printer();
                     printer.PrintRawFile(PrinterName, PathFilePrint, DocumentName);
@@ -90,5 +109,26 @@ namespace BarcodeReader.Services
 
             }
         }
+
+        static bool IsFileLocked(FileInfo file)
+        {
+            FileStream stream = null;
+            try
+            {
+                stream = file.Open(FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+            }
+            catch (IOException)
+            {
+                return true;
+            }
+            finally
+            {
+                if (stream != null)
+                    stream.Close();
+            }
+            return false;
+        }
+
+
     }
 }

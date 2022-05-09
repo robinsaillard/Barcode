@@ -74,10 +74,10 @@
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>7C93922475025BA1A5F308B0D69A7D3B468BD664</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>038C557D63583D3B89AE0507CDE7E8BE7BFB0749</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>BarcodeReader_1_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>BarcodeReader_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>BarcodeReader.App</StartupObject>
@@ -282,6 +282,7 @@
     </EmbeddedResource>
     <None Include="BarcodeReader_1_TemporaryKey.pfx" />
     <None Include="BarcodeReader_2_TemporaryKey.pfx" />
+    <None Include="BarcodeReader_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">

@@ -16,7 +16,7 @@ namespace BarcodeReader.Services
     {
         private static readonly string DRIVER_DIR = "./chromedriver/";
         private readonly string version_chrome;
-        public IWebDriver driver;
+        public  IWebDriver driver;
         private ChromeOptions chromeOptions;
         public string Directory { get; set; }
 
