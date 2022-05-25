@@ -1,4 +1,5 @@
 ﻿using RawPrint;
+using Spire.Pdf;
 using System;
 using System.IO;
 using System.Printing;
@@ -14,10 +15,8 @@ namespace BarcodeReader.Services
     {
         public string Directory { get; set; }
         public static string PrinterName { get; set; }
-
         public FileSystemWatcher watcher;
         public static string PathFilePrint { get; set; }
-        public static string DocumentName { get; set; }
         public static string[] ListFileName { get; set; }
 
         public DirectoryWatcher(string dir, string[] filename = null, string ext = "*", string printerName = "Adobe PDF")
@@ -51,43 +50,25 @@ namespace BarcodeReader.Services
                 {
                     System.Threading.Thread.Sleep(1000);
                     PathFilePrint = e.FullPath;
-                }
-            }
-            if (File.Exists(PathFilePrint))
-            {
-                try
-                {
-                    DocumentName = Path.GetFileName(PathFilePrint);
-                    IPrinter printer = new Printer();
-                    printer.PrintRawFile(PrinterName, PathFilePrint, DocumentName);
-
-                    var myPrintServer = new LocalPrintServer();
-                    var pq = myPrintServer.GetPrintQueue(PrinterName);
-
-                    var jobs = pq.GetPrintJobInfoCollection();
-
-                    foreach (var job in jobs)
+                    if (File.Exists(PathFilePrint))
                     {
-                        var done = false;
-                        while (!done)
+                        try
                         {
-                            pq.Refresh();
-                            job.Refresh();
-                            done = job.IsDeleted;
-                        }
-                        if (done)
-                        {
+                            PdfDocument printer = new PdfDocument();
+                            printer.LoadFromFile(PathFilePrint);
+                            printer.PrintSettings.PrinterName = PrinterName;
+                            printer.Print();
                             File.Delete(PathFilePrint);
+
                         }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message);
+                        }
+
+
                     }
-
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-
-
             }
         }
     }

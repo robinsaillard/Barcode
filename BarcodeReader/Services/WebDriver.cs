@@ -81,6 +81,7 @@ namespace BarcodeReader.Services
             string path_dir = "./chromedriver";
             string path = path_dir + file_name;
             string chromedriver = "/chromedriver.exe";
+
             if (version != null)
             {
                 WebClient client = new WebClient();
@@ -90,14 +91,30 @@ namespace BarcodeReader.Services
                 string link = base_driver_url + last_version + file_name;
                 try
                 {
+                  
                     client.DownloadFile(link, path);
+                    
+                    if (File.Exists(path_dir + chromedriver)) {
+                        var chromeDriverProcesses = Process.GetProcesses().
+                        Where(pr => pr.ProcessName == "chromedriver"); // without '.exe'
+
+                        foreach (var process in chromeDriverProcesses)
+                        {
+                            process.Kill();
+                        }
+                        File.SetAttributes(path_dir + chromedriver, FileAttributes.Normal);
+                        File.Delete(path_dir + chromedriver);
+                        var stop = "stop";
+                    }
                     if (File.Exists(path)) ZipFile.ExtractToDirectory(path, path_dir);
-                    if (File.Exists(path_dir + chromedriver)) File.Delete(path);
 
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
                     if (!System.IO.Directory.Exists(path_dir)) System.IO.Directory.CreateDirectory(path_dir);
+
+                    var test = e.Message;
+                    var coucou = "test";
                 }
             }
         }
