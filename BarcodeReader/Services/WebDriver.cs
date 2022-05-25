@@ -104,7 +104,7 @@ namespace BarcodeReader.Services
                         }
                         File.SetAttributes(path_dir + chromedriver, FileAttributes.Normal);
                         File.Delete(path_dir + chromedriver);
-                        var stop = "stop";
+
                     }
                     if (File.Exists(path)) ZipFile.ExtractToDirectory(path, path_dir);
 
@@ -113,8 +113,7 @@ namespace BarcodeReader.Services
                 {
                     if (!System.IO.Directory.Exists(path_dir)) System.IO.Directory.CreateDirectory(path_dir);
 
-                    var test = e.Message;
-                    var coucou = "test";
+                    var message = e.Message;
                 }
             }
         }
