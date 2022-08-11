@@ -2,6 +2,7 @@
 using BarcodeReader.Commands;
 using BarcodeReader.Models;
 using BarcodeReader.Services;
+using BarcodeReader.Services.Carriers;
 using Djlastnight.Hid;
 using Djlastnight.Input;
 using System;
@@ -73,6 +74,14 @@ namespace BarcodeReader.ViewModels
                 StartBtn = false;
                 StartDriver();
                 StartDirectoryWatcher();
+                /* Tnt tnt = new Tnt("afrancoise@capska.fr", "north-140", "08911924");
+                 tnt.ExpeditionCreation("test", "5 promenade des squares", "", "Hérouville Saint Clair", "14200", "Robin", "Saillard", "robin.saillard@hotmail.fr",
+                     "0624506933", 2, 10.5);*/
+                /*Colissimo colissimo = new Colissimo("966248", "CAPSKA2020");
+                colissimo.Execute();*/
+                /*TntInternational tntInternational = new TntInternational("CAPSST", "TutoPCap", "8992666");
+                //TntInternational tntInternational = new TntInternational("CAPSKA", "AutoPCap", "8992666");
+                tntInternational.CreateLabel(); */
                 Reader = new HidDataReader(CurrentWindow);
                 Reader.HidDataReceived += OnHidDataReceived;
 
