@@ -197,5 +197,120 @@ namespace BarcodeReader.Services
             return historique;
         }
 
+        public static int InsertOption(string postName, string variable, string value)
+        {
+            MySqlConnection conn = DBUtils.GetDBConnection();
+            conn.Open();
+
+            try
+            {
+                // D'abord récupérer l'ID du post
+                string sqlGetPostId = "SELECT Id FROM Posts WHERE Name = @PostName";
+                MySqlCommand cmdGetPostId = new MySqlCommand(sqlGetPostId, conn);
+                cmdGetPostId.Parameters.AddWithValue("@PostName", postName);
+
+                var postId = cmdGetPostId.ExecuteScalar();
+
+                if (postId == null)
+                {
+                    throw new Exception($"Le poste '{postName}' n'existe pas en base de données");
+                }
+
+                // Insérer la nouvelle option
+                string sql = "INSERT INTO Options (Post, Variable, Value) VALUES (@Post, @Variable, @Value)";
+                MySqlCommand cmd = new MySqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@Post", postId);
+                cmd.Parameters.AddWithValue("@Variable", variable);
+                cmd.Parameters.AddWithValue("@Value", value);
+
+                int rowCount = cmd.ExecuteNonQuery();
+                return rowCount;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex);
+                Console.WriteLine(ex.StackTrace);
+                throw;
+            }
+            finally
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
+
+
+
+
+        public static void EnsureAutoPrintOptionExists(string postName)
+        {
+            try
+            {
+                var options = GetOptions(postName);
+
+                if (options == null || !options.ContainsKey("AUTOPRINT_ENABLED"))
+                {
+                    InsertOption(postName, "AUTOPRINT_ENABLED", "false");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error creating AUTOPRINT option: " + ex);
+            }
+        }
+
+        public static Options GetOption(string postName, string variable)
+        {
+            try
+            {
+                var options = GetOptions(postName);
+
+                if (options != null && options.ContainsKey(variable))
+                {
+                    return options[variable];
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error in GetOption: " + ex);
+                Console.WriteLine(ex.StackTrace);
+                return null;
+            }
+        }
+
+        public static string GetOptionValue(string postName, string variable)
+        {
+            try
+            {
+                var option = GetOption(postName, variable);
+                return option?.Value;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error in GetOptionValue: " + ex);
+                return null;
+            }
+        }
+
+        public static bool IsOptionEnabled(string postName, string variable)
+        {
+            try
+            {
+                var option = GetOption(postName, variable);
+                if (option != null && !string.IsNullOrEmpty(option.Value))
+                {
+                    return bool.TryParse(option.Value, out bool result) && result;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error in IsOptionEnabled: " + ex);
+                return false;
+            }
+        }
+
     }
 }

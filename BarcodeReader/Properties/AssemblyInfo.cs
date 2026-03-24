@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using Microsoft.SharePoint.Client;
+using System.Reflection;
 using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -51,6 +52,6 @@ using System.Windows;
 // Vous pouvez spécifier toutes les valeurs ou indiquer les numéros de build et de révision par défaut
 // en utilisant '*', comme indiqué ci-dessous :
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.4")]
-[assembly: AssemblyFileVersion("1.0.4")]
+[assembly: AssemblyVersion("1.0.15")]
+[assembly: AssemblyFileVersion("1.0.15")]
 [assembly: NeutralResourcesLanguage("fr")]

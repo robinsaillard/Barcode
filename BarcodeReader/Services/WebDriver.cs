@@ -5,25 +5,31 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
+using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows;
 using Microsoft.Win32;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using WebDriverManager;
+using WebDriverManager.DriverConfigs.Impl;
 
 namespace BarcodeReader.Services
 {
     public class WebDriver
     {
-        private static readonly string DRIVER_DIR = "./chromedriver/";
+        private static readonly string DRIVER_DIR = "./Chrome/";
         private readonly string version_chrome;
         public IWebDriver driver;
         private ChromeOptions chromeOptions;
+        private string errorMessage;
+        private string etape;
         public string Directory { get; set; }
 
         public WebDriver(string directory)
         {
             Directory = directory;
-            if (driver == null) 
+            if (driver == null)
             {
                 this.version_chrome = GetChromeVersion();
                 if (this.version_chrome != null)
@@ -39,39 +45,25 @@ namespace BarcodeReader.Services
 
         public void GetDriver()
         {
-            var retry = true;
-            var retryValue = 2;
-            while (retry && retryValue > 0)
+            try
             {
-                retry = false;
-
-                try
-                {
-                    var driverService = ChromeDriverService.CreateDefaultService(DRIVER_DIR);
-                    driverService.HideCommandPromptWindow = true;
-
-                    CreateChromeOptions();
-
-                    this.driver = new ChromeDriver(driverService, this.chromeOptions);
-                    var windowWidth = SystemParameters.PrimaryScreenWidth;
-                    this.driver.Manage().Window.Position = new System.Drawing.Point(Convert.ToInt32(windowWidth / 2), 1);
-                }
-                catch (Exception)
-                {
-                    DownloadDriver();
-                    retry = true;
-                }
-                retryValue--;
+                CreateChromeOptions();
+                // Selenium Manager gère automatiquement la compatibilité des versions
+                this.driver = new ChromeDriver(this.chromeOptions);
+                var windowWidth = SystemParameters.PrimaryScreenWidth;
+                this.driver.Manage().Window.Position = new System.Drawing.Point(Convert.ToInt32(windowWidth / 2), 1);
             }
-
+            catch (Exception e)
+            {
+                this.errorMessage = e.Message;
+            }
         }
 
-        public static string CheckVersionDriver(IWebDriver driver)
+        public static string CheckVersionDriver(ChromeDriver driver)
         {
             ICapabilities capabilities = ((ChromeDriver)driver).Capabilities;
             return (string)capabilities.GetCapability("browserVersion");
         }
-
 
         public void DownloadDriver()
         {
@@ -89,46 +81,48 @@ namespace BarcodeReader.Services
                 string link_last_version = base_driver_url + "LATEST_RELEASE_" + split_version[0];
                 string last_version = client.DownloadString(link_last_version);
                 string link = base_driver_url + last_version + file_name;
+
                 try
                 {
-                  
                     client.DownloadFile(link, path);
-                    
-                    if (File.Exists(path_dir + chromedriver)) {
-                        var chromeDriverProcesses = Process.GetProcesses().
-                        Where(pr => pr.ProcessName == "chromedriver"); // without '.exe'
-
-                        foreach (var process in chromeDriverProcesses)
-                        {
-                            process.Kill();
-                        }
-                        
-                        File.SetAttributes(path_dir + chromedriver, FileAttributes.Normal);
-                        DeleteFile(path_dir + chromedriver);
-
-                    }
-                    if (File.Exists(path)) ZipFile.ExtractToDirectory(path, path_dir);
-
+                    Console.WriteLine(link);
+                    Thread th = new Thread(extractZip);
+                    th.Start();
                 }
                 catch (Exception e)
                 {
-                    if (!System.IO.Directory.Exists(path_dir)) System.IO.Directory.CreateDirectory(path_dir);
-
+                    if (!System.IO.Directory.Exists(path_dir))
+                        System.IO.Directory.CreateDirectory(path_dir);
                     var message = e.Message;
+                }
+            }
+        }
+
+        static void extractZip()
+        {
+            string path_dir = "./chromedriver";
+            string file_name = "/chromedriver_win32.zip";
+            string path = path_dir + file_name;
+            for (; ; )
+            {
+                Thread.Sleep(1000);
+                if (File.Exists(file_name) == true)
+                {
+                    ZipFile.ExtractToDirectory(path, path_dir);
                 }
             }
         }
 
         public static void DeleteFile(String fileToDelete)
         {
-            var fi = new System.IO.FileInfo(fileToDelete);
+            var fi = new FileInfo(fileToDelete);
             if (fi.Exists)
             {
                 fi.Delete();
                 fi.Refresh();
                 while (fi.Exists)
                 {
-                    System.Threading.Thread.Sleep(100);
+                    Thread.Sleep(100);
                     fi.Refresh();
                 }
             }
@@ -139,6 +133,11 @@ namespace BarcodeReader.Services
             return driver;
         }
 
+        public string GetErrorMessage()
+        {
+            return this.errorMessage;
+        }
+
         public string GetChromeVersion()
         {
             RegistryKey localKey;
@@ -147,13 +146,19 @@ namespace BarcodeReader.Services
             else
                 localKey = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Registry32);
 
-            string chrome_version = localKey.OpenSubKey("SOFTWARE").OpenSubKey("Google").OpenSubKey("Chrome").OpenSubKey("BLBeacon").GetValue("version").ToString();
+            string chrome_version = localKey
+                .OpenSubKey("SOFTWARE")
+                .OpenSubKey("Google")
+                .OpenSubKey("Chrome")
+                .OpenSubKey("BLBeacon")
+                .GetValue("version")
+                .ToString();
+
             return chrome_version ?? null;
         }
 
         public void CloseGhostsChromeDriver()
         {
-
             if (this.driver != null)
             {
                 try
@@ -165,12 +170,10 @@ namespace BarcodeReader.Services
                     MessageBox.Show("Erreur :" + ex.Message);
                 }
             }
-           
+
             Process[] cmd = Process.GetProcessesByName("cmd");
             Process[] chromeDriver = Process.GetProcessesByName("chromedriver");
-
             Process[] workers = chromeDriver.Concat(cmd).ToArray();
-
             foreach (Process worker in workers)
             {
                 worker.Kill();
@@ -179,29 +182,42 @@ namespace BarcodeReader.Services
             }
         }
 
-
         public void OpenLink(string url)
         {
             try
             {
-                this.driver.Navigate().GoToUrl(url);
+                string finalUrl = url;
+                if (DbManager.IsOptionEnabled(Environment.MachineName, "AUTOPRINT_ENABLED"))
+                {
+                    char separator = url.Contains("?") ? '&' : '?';
+                    finalUrl = $"{url}{separator}auto=1";
+                }
+
+                if (url.Contains("www.vitre-insert-cheminee.fr"))
+                {
+                    string username = "capska";
+                    string password = "Madrid2002!";
+                    Uri uri = new Uri(finalUrl);
+                    string authUrl = $"{uri.Scheme}://{username}:{password}@{uri.Host}{uri.PathAndQuery}";
+                    this.driver.Navigate().GoToUrl(authUrl);
+                }
+                else
+                {
+                    this.driver.Navigate().GoToUrl(finalUrl);
+                }
             }
             catch (Exception)
             {
-                if(this.driver == null) GetDriver();
+                if (this.driver == null)
+                    GetDriver();
                 MessageBox.Show(url);
-               
-            }         
+            }
         }
 
         public void CreateChromeOptions()
         {
             this.chromeOptions = new ChromeOptions();
-
-            List<string> ls = new List<string>
-            {
-                "enable-logging"
-            };
+            List<string> ls = new List<string> { "enable-logging" };
             this.chromeOptions.AddExcludedArguments(ls);
             this.chromeOptions.AddArgument("--ignore-certificate-errors");
             this.chromeOptions.AddArgument("--disable-popup-blocking");
@@ -214,8 +230,7 @@ namespace BarcodeReader.Services
             this.chromeOptions.AddUserProfilePreference("safebrowsing.enabled", true);
             this.chromeOptions.AddUserProfilePreference("download.open_pdf_in_system_reader", false);
             this.chromeOptions.AddUserProfilePreference("plugins.always_open_pdf_externally", true);
-
-            this.chromeOptions.AddExtension(@"./Ressources/extension.crx");
+            //this.chromeOptions.AddExtension(@"./Ressources/extension.crx");
         }
     }
 }

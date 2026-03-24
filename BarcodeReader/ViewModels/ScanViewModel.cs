@@ -11,6 +11,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
+using static System.Windows.Forms.LinkLabel;
 
 namespace BarcodeReader.ViewModels
 {
@@ -28,6 +29,7 @@ namespace BarcodeReader.ViewModels
         private string log = "";
         private readonly string green = "#32CD32";
         private readonly string red = "#e53935";
+        private RawInputHelper _rawInputHelper;
 
         public ScanViewModel()
         {
@@ -68,40 +70,64 @@ namespace BarcodeReader.ViewModels
 
         private void OnStartAction()
         {
-            if (StartBtn && Device != null)
+            try
             {
-                StopBtn = true;
-                StartBtn = false;
-                StartDriver();
-                StartDirectoryWatcher();
-                /* Tnt tnt = new Tnt("afrancoise@capska.fr", "north-140", "08911924");
-                 tnt.ExpeditionCreation("test", "5 promenade des squares", "", "Hérouville Saint Clair", "14200", "Robin", "Saillard", "robin.saillard@hotmail.fr",
-                     "0624506933", 2, 10.5);*/
-                /*Colissimo colissimo = new Colissimo("966248", "CAPSKA2020");
-                colissimo.Execute();*/
-                /*TntInternational tntInternational = new TntInternational("CAPSST", "TutoPCap", "8992666");
-                //TntInternational tntInternational = new TntInternational("CAPSKA", "AutoPCap", "8992666");
-                tntInternational.CreateLabel(); */
-                Reader = new HidDataReader(CurrentWindow);
-                Reader.HidDataReceived += OnHidDataReceived;
-
-                Run run = new Run(string.Format(
-                   "================ Démarrage {0} ================", ApplicationInfo.AppNameVersion
-                ))
+                UpdateStatutScanCode();
+                if (StartBtn && Device != null)
                 {
-                    Foreground = Brushes.White,
-                    Background = GetColor("#2196f3")
-                };
-                RtbContent = run;
-            }else
+                    StopBtn = true;
+                    StartBtn = false;
+                    StartDriver();
+                    StartDirectoryWatcher();
+
+                    if (_rawInputHelper == null)
+                    {
+                        _rawInputHelper = new RawInputHelper();
+                        _rawInputHelper.BarcodeReceived += (s, barcode) =>
+                        {
+                            Application.Current.Dispatcher.Invoke(() => OnBarcodeReceived(barcode));
+                        };
+                        if (CurrentWindow.IsLoaded)
+                        {
+                            _rawInputHelper.Initialize(CurrentWindow);
+                        }
+                        else
+                        {
+                            CurrentWindow.Loaded += (s, e) => _rawInputHelper.Initialize(CurrentWindow);
+                        }
+                    }
+
+                    Run run = new Run(string.Format(
+                        "================ Démarrage {0} chrome : {1} ================",
+                        ApplicationInfo.AppNameVersion, Driver?.GetChromeVersion()
+                    ))
+                    {
+                        Foreground = Brushes.White,
+                        Background = GetColor("#2196f3")
+                    };
+                    RtbContent = run;
+                }
+                else
+                {
+                    Run run = new Run("Erreur : Vérifiez les branchements USB de la zapette/douchette")
+                    {
+                        Foreground = Brushes.Red,
+                        Background = Brushes.Black
+                    };
+                    RtbContent = run;
+                    StartBtnContent = "Réessayez";
+                }
+            }
+            catch (Exception ex)
             {
-                Run run = new Run("Erreur : Verifiez les branchements USB de la zapette/douchette")
+                Run run = new Run("Erreur OnStartAction: " + ex.Message)
                 {
                     Foreground = Brushes.Red,
                     Background = Brushes.Black
                 };
                 RtbContent = run;
-                StartBtnContent = "Réessayez";
+                StartBtn = true;
+                StopBtn = false;
             }
         }
         private void OnStopAction()
@@ -116,7 +142,11 @@ namespace BarcodeReader.ViewModels
                     Background = GetColor("#2196f3")
                 };
                 RtbContent = run;
-                Reader.Dispose();
+                if (_rawInputHelper != null)
+                {
+                    _rawInputHelper.Dispose(CurrentWindow);
+                    _rawInputHelper = null;
+                }
             }
             if(Driver != null)
             {
@@ -129,10 +159,34 @@ namespace BarcodeReader.ViewModels
             StatutText = "OFF";
         }
 
+        private void OnBarcodeReceived(string barcode)
+        {
+            barcode = barcode.Trim();
+
+            string link;
+
+            if (barcode.StartsWith("https://"))
+            {
+                link = barcode;
+            }
+            else if (barcode.StartsWith("http://"))
+            {
+                link = barcode;
+            }
+            else
+            {
+                link = "http://" + barcode;
+            }
+
+            Driver.OpenLink(link);
+            AddHyperlinkText(link, link, "", "");
+        }
+
         private void OnHidDataReceived(object sender, HidEvent e)
         {
             try
             {
+                System.Diagnostics.Debug.WriteLine($"test: {sender}");
                 if (StartBtn) { return;}
                 if (e.Device == null) { return; }
 
@@ -294,6 +348,7 @@ namespace BarcodeReader.ViewModels
             try
             {
                 string directory = Options["DOWNLOAD_DIRECTORY"].Value;
+                
                 Driver = new WebDriver(directory);
                 string version = Driver.GetChromeVersion();
             }
